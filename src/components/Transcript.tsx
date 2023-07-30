@@ -21,9 +21,11 @@ interface Entry {
 
 interface TranscriptProps {
   currentTime: number;
+  onWordClick: (time: number) => void;
+  playing: boolean;
 }
 
-const Transcript: React.FC<TranscriptProps> = ({ currentTime }) => {
+const Transcript: React.FC<TranscriptProps> = ({ currentTime, onWordClick, playing }) => {
   const [words, setWords] = useState<WordType[]>([]);
   const [clickedWordIndex, setClickedWordIndex] = useState<number | null>(null);
 
@@ -37,8 +39,15 @@ const Transcript: React.FC<TranscriptProps> = ({ currentTime }) => {
       .catch((err) => console.error("Error loading JSON file:", err));
   }, []);
 
+  useEffect(() => {
+    if (playing) {
+      setClickedWordIndex(null);
+    }
+  }, [playing]);
+
   const handleClick = (index: number) => {
     setClickedWordIndex(index);
+    onWordClick(words[index].start);
   };
 
   const currentWordIndex = words.findIndex(

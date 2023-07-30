@@ -1,6 +1,7 @@
 /* VideoPlayer.tsx */
 import React, { RefObject } from 'react';
 import './VideoPlayer.css';
+
 interface VideoPlayerProps {
   videoRef: RefObject<HTMLVideoElement>;
 }
