@@ -39,9 +39,11 @@ const Transcript: React.FC = () => {
 
   return (
     <div className="transcript">
-      {words.map((word, i) => (
-        <Word key={i} word={word} onClick={() => handleClick(i)} isClicked={i === clickedWordIndex} />
-      ))}
+      <div className="inner-transcript">
+        {words.map((word, i) => (
+          <Word key={i} word={word} onClick={() => handleClick(i)} isClicked={i === clickedWordIndex} />
+        ))}
+      </div>
     </div>
   );
 };

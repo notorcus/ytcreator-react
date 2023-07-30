@@ -4,10 +4,9 @@
   }
 
 .transcript {
-    max-width: 800px;
-    padding: 50px;
+
     background-color: #1e1e1e;
-    border-radius: 25px;
+    border-radius: 20px;
     color: white;  
     font-family: Arial, sans-serif;
     font-size: 21px;
@@ -15,32 +14,38 @@
     line-height: 1.55;
     max-width: 800px;
     margin: 0 auto;
-    height: 500px;  /* Set a fixed height */
-    overflow: auto;  /* Add scrollbars when necessary */
     word-wrap: break-word;
     white-space: pre-wrap;
-    overflow-x: hidden;  /* Hide horizontal scrollbar */
-    overflow-y: auto;  /* Add vertical scrollbar when necessary */
     padding-right: 20px;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.inner-transcript {
+  padding: 40px;
+  padding-left: 80px;
+  padding-top: 50px;
+  padding-bottom: 50px;
 }
 
 /* Custom scrollbar styles */
 .transcript::-webkit-scrollbar {
-    width: 8px;  /* Make scrollbar thinner */
+    width: 8px;
   }
   
   .transcript::-webkit-scrollbar-track {
     background: transparent;
     border-radius: 10px;
-    margin-top: 40px;  /* Add top margin */
-    margin-bottom: 40px;  /* Add bottom margin */
+    margin-top: 25px;
+    margin-bottom: 120px;  
   }
   
   .transcript::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.5);  /* Make the scrollbar thumb lighter and semi-transparent */
+    background: rgba(255, 255, 255, 0.5);
     border-radius: 10px;
   }
   
   .transcript::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.801);  /* Lighten the scrollbar thumb when hovered */
+    background: rgba(255, 255, 255, 0.801);
   }
