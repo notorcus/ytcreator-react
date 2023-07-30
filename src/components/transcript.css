@@ -1,11 +1,46 @@
+.transcript-wrapper {
+    border-radius: 10px;
+    overflow: hidden;  /* Hide overflow to maintain rounded corners */
+  }
+
 .transcript {
     max-width: 800px;
-    padding: 40px;
-    background-color: #555;
-    border-radius: 10px;
+    padding: 50px;
+    background-color: #1e1e1e;
+    border-radius: 25px;
     color: white;  
     font-family: Arial, sans-serif;
     font-size: 21px;
-    word-spacing: 0px;
-    line-height: 1.75;
+    word-spacing: -3.5px;
+    line-height: 1.55;
+    max-width: 800px;
+    margin: 0 auto;
+    height: 500px;  /* Set a fixed height */
+    overflow: auto;  /* Add scrollbars when necessary */
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    overflow-x: hidden;  /* Hide horizontal scrollbar */
+    overflow-y: auto;  /* Add vertical scrollbar when necessary */
+    padding-right: 20px;
 }
+
+/* Custom scrollbar styles */
+.transcript::-webkit-scrollbar {
+    width: 8px;  /* Make scrollbar thinner */
+  }
+  
+  .transcript::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+    margin-top: 40px;  /* Add top margin */
+    margin-bottom: 40px;  /* Add bottom margin */
+  }
+  
+  .transcript::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.5);  /* Make the scrollbar thumb lighter and semi-transparent */
+    border-radius: 10px;
+  }
+  
+  .transcript::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.801);  /* Lighten the scrollbar thumb when hovered */
+  }

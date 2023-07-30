@@ -3,22 +3,35 @@ import React, { useState, useEffect } from 'react';
 import Word from './Word';
 import './Transcript.css';
 
+interface WordType {
+  word: string;
+  start: number;
+  end: number;
+  score: number;
+  speaker: string;
+}
+
+interface Entry {
+  start: number;
+  end: number;
+  text: string;
+  words: WordType[];
+  speaker: string;
+}
+
 const Transcript: React.FC = () => {
-  const [text, setText] = useState('');
+  const [words, setWords] = useState<WordType[]>([]);
   const [clickedWordIndex, setClickedWordIndex] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch('/transcript.txt')
-      .then((res) => res.text())
-      .then((data) => {
-        setText(data);
+    fetch('/MW Hormozi.json')
+      .then((res) => res.json())
+      .then((data: Entry[]) => {
+        const words = data.flatMap(entry => entry.words);
+        setWords(words);
       })
-      .catch((err) => console.error("Error loading text file:", err));
+      .catch((err) => console.error("Error loading JSON file:", err));
   }, []);
-
-  const words = text.split(/\s+/).map((word, i) => {
-    return { word, start: i, end: i + 1, score: 1, speaker: 'Speaker 1' };
-  });
 
   const handleClick = (index: number) => {
     setClickedWordIndex(index);

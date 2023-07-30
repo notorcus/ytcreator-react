@@ -3,5 +3,24 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #333;
+  background-color: #121212;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.main-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 80vw;
+  height: 80vh;
+}
+
+.transcript-wrapper {
+  border-radius: 10px;
+  overflow: hidden;  /* Hide overflow to maintain rounded corners */
+  flex-grow: 1;  /* Allow the transcript to take up remaining space */
+  max-height: 1920px;  /* Match the height of the video player */
 }

@@ -1,0 +1,11 @@
+/* VideoPlayer.css */
+.video-player {
+    max-width: 1080px;
+    max-height: 1920px;
+  }
+  
+  .video-player video {
+    max-width: 100%;
+    max-height: 100%;
+  }
+  
