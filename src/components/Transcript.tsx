@@ -1,4 +1,4 @@
-// Transcript.tsx
+/* Transcript.tsx */
 import React, { useState, useEffect } from 'react';
 import Word from './Word';
 import './Transcript.css';
@@ -19,7 +19,11 @@ interface Entry {
   speaker: string;
 }
 
-const Transcript: React.FC = () => {
+interface TranscriptProps {
+  currentTime: number;
+}
+
+const Transcript: React.FC<TranscriptProps> = ({ currentTime }) => {
   const [words, setWords] = useState<WordType[]>([]);
   const [clickedWordIndex, setClickedWordIndex] = useState<number | null>(null);
 
@@ -37,13 +41,15 @@ const Transcript: React.FC = () => {
     setClickedWordIndex(index);
   };
 
+  const currentWordIndex = words.findIndex(
+    word => word.start <= currentTime && word.end >= currentTime
+  );
+
   return (
     <div className="transcript">
-      <div className="inner-transcript">
-        {words.map((word, i) => (
-          <Word key={i} word={word} onClick={() => handleClick(i)} isClicked={i === clickedWordIndex} />
-        ))}
-      </div>
+      {words.map((word, i) => (
+        <Word key={i} word={word} onClick={() => handleClick(i)} isClicked={i === clickedWordIndex || i === currentWordIndex} />
+      ))}
     </div>
   );
 };

@@ -1,11 +1,14 @@
-// VideoPlayer.tsx
-import React from 'react';
+/* VideoPlayer.tsx */
+import React, { RefObject } from 'react';
 import './VideoPlayer.css';
+interface VideoPlayerProps {
+  videoRef: RefObject<HTMLVideoElement>;
+}
 
-const VideoPlayer: React.FC = () => {
+const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoRef }) => {
   return (
     <div className="video-player">
-      <video controls>
+      <video ref={videoRef} controls>
         <source src="/MW Hormozi.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>

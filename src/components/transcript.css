@@ -4,29 +4,24 @@
   }
 
 .transcript {
-
-    background-color: #1e1e1e;
-    border-radius: 20px;
-    color: white;  
-    font-family: Arial, sans-serif;
-    font-size: 21px;
-    word-spacing: -3.5px;
-    line-height: 1.55;
-    max-width: 800px;
-    margin: 0 auto;
-    word-wrap: break-word;
-    white-space: pre-wrap;
-    padding-right: 20px;
-    height: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-
-.inner-transcript {
-  padding: 40px;
-  padding-left: 80px;
-  padding-top: 50px;
-  padding-bottom: 50px;
+  padding: 50px;
+  padding-left: 60px;
+  padding-right: 55px;
+  background-color: #1e1e1e;
+  border-radius: 20px;
+  color: white;  
+  font-family: Arial, sans-serif;
+  font-size: 21px;
+  word-spacing: -3.5px;
+  line-height: 1.55;
+  max-width: 800px;
+  margin: 0 auto;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 /* Custom scrollbar styles */
@@ -38,7 +33,7 @@
     background: transparent;
     border-radius: 10px;
     margin-top: 25px;
-    margin-bottom: 120px;  
+    margin-bottom: 25px;  
   }
   
   .transcript::-webkit-scrollbar-thumb {
