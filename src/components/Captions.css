@@ -1,13 +1,22 @@
 /* Captions.css */
+@font-face {
+  font-family: 'YourFont';
+  src: url('/NoirPro-Bold.otf') format('truetype');
+}
+
 .captions {
   position: absolute;
-  top: 50%;  /* Change this */
-  left: 50%;  /* Add this */
-  transform: translate(-50%, -50%);  /* Add this */
+  bottom: 20px;
   width: 100%;
   text-align: center;
-  color: white;
-  font-size: 20px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  z-index: 1;
+  font-size: 40px;
+}
+
+.captions svg {
+  width: 100%;
+  height: auto;
+}
+
+.captions text {
+  font-family: 'YourFont', sans-serif;
 }
