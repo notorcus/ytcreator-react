@@ -34,7 +34,7 @@ interface TranscriptProps {
 
 const Transcript: React.FC<TranscriptProps> = ({ currentTime, onWordClick, playing, setSubtitles }) => {
   const [words, setWords] = useState<WordType[]>([]);
-  const [clickedWordIndex, setClickedWordIndex] = useState<number | null>(null);
+  const [clickedWordIndex, setClickedWordIndex] = useState<number | null>(null);  
 
   useEffect(() => {
     fetch('/MW Hormozi.json')
@@ -48,22 +48,38 @@ const Transcript: React.FC<TranscriptProps> = ({ currentTime, onWordClick, playi
         words.forEach(word => {
           group.push(word);
           if (word.word.endsWith('.') || word.word.endsWith('?') || word.word.endsWith(',')) {
-            console.log('Group:', group.map(word => word.word).join(' '));  // print group
             groups.push(group);
             group = [];
           }
         });
         if (group.length > 0) {
-          console.log('Group:', group.map(word => word.word).join(' '));  // print last group if exists
           groups.push(group);
         }
   
-        // Comment out the subtitle code for now
-        // const subtitles = splitGroupsIntoSubtitles(groups, 25, 2, 3);
-        // setSubtitles(subtitles);
+        const subtitles: Subtitle[] = [];
+        groups.forEach(group => {
+          const minWords = 2;
+          const maxWords = 4;
+          const avgWords = Math.round((minWords + maxWords) / 2);
+          let i = 0;
+          while (i < group.length) {
+            let subtitleWords = group.slice(i, i + avgWords);
+            const subtitle = {
+              start: subtitleWords[0].start,
+              end: subtitleWords[subtitleWords.length - 1].end,
+              text: subtitleWords.map(word => word.word).join(' ')
+            };
+            subtitles.push(subtitle);
+            i += avgWords;
+          }
+        });
+  
+        console.log(subtitles); // Print all subtitles to the console
+        setSubtitles(subtitles);
       })
       .catch((err) => console.error("Error loading JSON file:", err));
   }, []);
+  
 
   useEffect(() => {
     if (playing) {

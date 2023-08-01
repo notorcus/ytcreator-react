@@ -1,12 +1,20 @@
 // VideoPlayer.tsx
 import React, { useEffect, useState } from 'react';
 import './VideoPlayer.css';
+import Captions from './Captions';
+
+interface Subtitle {
+  start: number;
+  end: number;
+  text: string;
+}
 
 interface VideoPlayerProps {
   videoRef: React.RefObject<HTMLVideoElement>;
+  currentSubtitle: Subtitle | null;
 }
 
-const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoRef }) => {
+const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoRef, currentSubtitle }) => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
@@ -34,6 +42,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoRef }) => {
         <source src="/MW Hormozi.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
+      <Captions currentSubtitle={currentSubtitle !== null ? currentSubtitle.text : null} />
     </div>
   );
 };

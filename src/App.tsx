@@ -1,10 +1,9 @@
 // App.tsx
-import React, { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import './App.css';
 import Transcript from './components/Transcript';
 import { Subtitle } from './components/Subtitle';
 import VideoPlayer from './components/VideoPlayer';
-import Captions from './components/Captions';
 
 function App() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -59,8 +58,7 @@ function App() {
       <div className="main-content">
         <div className="large-wrapper">
           <div className="video-player-wrapper">
-            <VideoPlayer videoRef={videoRef} />
-            <Captions currentTime={currentTime} currentSubtitle={currentSubtitleIndex !== null ? subtitles[currentSubtitleIndex] : null} />
+            <VideoPlayer videoRef={videoRef} currentSubtitle={currentSubtitleIndex !== null ? subtitles[currentSubtitleIndex] : null} />
           </div>
         </div>
         <div className="transcript-wrapper">
