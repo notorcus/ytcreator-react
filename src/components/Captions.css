@@ -1,0 +1,22 @@
+/* Captions.css */
+@font-face {
+  font-family: 'YourFont';
+  src: url('/NoirPro-Bold.otf') format('truetype');
+}
+
+.captions {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  text-align: center;
+  font-size: 40px;
+}
+
+.captions svg {
+  width: 100%;
+  height: auto;
+}
+
+.captions text {
+  font-family: 'YourFont', sans-serif;
+}

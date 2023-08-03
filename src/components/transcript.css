@@ -1,46 +1,46 @@
 .transcript-wrapper {
-    border-radius: 10px;
-    overflow: hidden;  /* Hide overflow to maintain rounded corners */
-  }
+  border-radius: 10px;
+  overflow: hidden;  /* Hide overflow to maintain rounded corners */
+}
 
 .transcript {
-  padding: 50px;
-  padding-left: 60px;
-  padding-right: 55px;
-  background-color: #1e1e1e;
-  border-radius: 20px;
-  color: white;  
-  font-family: Arial, sans-serif;
-  font-size: 21px;
-  word-spacing: -3.5px;
-  line-height: 1.55;
-  max-width: 800px;
-  margin: 0 auto;
-  word-wrap: break-word;
-  white-space: pre-wrap;
-  
-  height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
+padding: 50px;
+padding-left: 60px;
+padding-right: 55px;
+background-color: #1e1e1e;
+border-radius: 20px;
+color: white;  
+font-family: Arial, sans-serif;
+font-size: 21px;
+word-spacing: -3.5px;
+line-height: 1.55;
+max-width: 800px;
+margin: 0 auto;
+word-wrap: break-word;
+white-space: pre-wrap;
+
+height: 100%;
+overflow-x: hidden;
+overflow-y: auto;
 }
 
 /* Custom scrollbar styles */
 .transcript::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  .transcript::-webkit-scrollbar-track {
-    background: transparent;
-    border-radius: 10px;
-    margin-top: 25px;
-    margin-bottom: 25px;  
-  }
-  
-  .transcript::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.5);
-    border-radius: 10px;
-  }
-  
-  .transcript::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.801);
-  }
+  width: 8px;
+}
+
+.transcript::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+  margin-top: 25px;
+  margin-bottom: 25px;  
+}
+
+.transcript::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 10px;
+}
+
+.transcript::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.801);
+}
