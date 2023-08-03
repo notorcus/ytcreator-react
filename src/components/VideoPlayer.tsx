@@ -9,12 +9,18 @@ interface Subtitle {
   text: string;
 }
 
+interface TimeStamp {
+  start: number;
+  end: number;
+}
+
 interface VideoPlayerProps {
   videoRef: React.RefObject<HTMLVideoElement>;
   currentSubtitle: Subtitle | null;
+  timeStamp: TimeStamp | null;
 }
 
-const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoRef, currentSubtitle }) => {
+const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoRef, currentSubtitle, timeStamp }) => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
@@ -35,6 +41,16 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoRef, currentSubtitle }) 
       video.removeEventListener('click', handleClick);
     };
   }, [videoRef, isPlaying]);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !timeStamp) return;
+
+    video.currentTime = timeStamp.start;
+    if (isPlaying) {
+      video.play();
+    }
+  }, [videoRef, timeStamp, isPlaying]);
 
   return (
     <div className="video-player">
