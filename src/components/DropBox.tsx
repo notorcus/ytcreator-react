@@ -9,8 +9,25 @@ const DropBox = () => {
     setText(event.target.value);
   };
 
+  const sendLink = async (url: string) => {
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ 'video_url': url })
+    };
+
+    const response = await fetch('http://127.0.0.1:8000/ytcreator/api/process_video', requestOptions);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    } else {
+      const data = await response.json();
+      console.log(data);
+    }
+  }
+
   const handleButtonClick = () => {
-    alert(`You sent: ${text}`);
+    sendLink(text).catch(e => console.log(e));
     setText(''); // clear the text box
   };
 
