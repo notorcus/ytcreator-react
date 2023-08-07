@@ -4,3 +4,6 @@ body {
   padding: 0;
 }
 
+body, button, input, textarea {
+  font-family: 'Roboto', sans-serif; /* Fallback to sans-serif if Roboto doesn't load */
+}

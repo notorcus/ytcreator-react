@@ -1,4 +1,5 @@
 .navBar {
+    height: 50px;
     background-color: #1e1e1e;
     padding: 10px;
     border-radius: 0px;
@@ -11,28 +12,35 @@
   }
   
   .navBar ul {
+    display: flex;
+    height: 100%;
     list-style-type: none;
     padding: 0px;
-    display: flex;
-    justify-content: start;
-    margin-left: 30px;
+    margin: 0px;
   }
   
-  .navBar ul li {
-    margin-right: 20px;
+  .navBar li {
+    height: 100%;
+    padding: 0 15px;  /* This will add space to the left and right of each link */
+    display: flex;    /* To center align content */
+    align-items: center; 
   }
+  
+  
   
   .navBar ul li a {
     color: white;
     text-decoration: none;
+    
   }
 
   .active a {
-    color: white; /* Adjust as needed */
-    font-weight: bold;
+    display: flex;
+    align-items: center;
+    width: 100%; /* Ensure the link fills the width of its parent list item */
+    height: 100%;
+    color: rgb(255, 255, 255); /* Adjust as needed */
     background-color: #0f4e7799; /* Highlight color */
-    padding: 5px 10px; /* Add some padding around the text */
-    border-radius: 0; /* Remove rounded corners */
-    text-decoration: none; /* Remove underline */
+    text-decoration: none;
   }
   
