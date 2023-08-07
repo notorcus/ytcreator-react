@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import SendButton from './SendButton';
 import './DropBox.css';
+import { useNavigate } from 'react-router-dom';
 
 const DropBox = () => {
   const [text, setText] = useState('');
+  const navigate = useNavigate();
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setText(event.target.value);
@@ -23,6 +25,7 @@ const DropBox = () => {
     } else {
       const data = await response.json();
       console.log(data);
+      navigate('/videos'); // Navigate to the Videos page after successful fetch
     }
   }
 
