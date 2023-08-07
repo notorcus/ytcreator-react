@@ -6,9 +6,9 @@
     }
 
 .word.highlight {
-    background-color: rgba(15, 78, 119, 0.6);
+    background-color: #0f4e7799;
 }
 
 .word.clicked {
-    background-color: rgb(16, 82, 126);
+    background-color: #10527e;
 }
