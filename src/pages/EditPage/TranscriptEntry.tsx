@@ -27,7 +27,11 @@ const TranscriptEntry: React.FC<TranscriptEntryProps> = ({ entry }) => {
     return (
     <div className="transcript-entry">
         {entry.words.map((word, i) => (
-        <Word key={i} word={word} />
+        <Word key={i} word={word} onClick={function (): void {
+                throw new Error('Function not implemented.');
+            } } isClicked={false} onWordChange={function (): void {
+                throw new Error('Function not implemented.');
+            } } />
         ))}
     </div>
     );

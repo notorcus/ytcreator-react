@@ -1,9 +1,9 @@
 // App.tsx
 import { useRef, useState, useEffect } from 'react';
 import './App.css';
-import Transcript from './components/Transcript';
-import { Subtitle } from './components/Subtitle';
-import VideoPlayer from './components/VideoPlayer';
+import Transcript from './pages/EditPage/Transcript';
+import { Subtitle } from './pages/EditPage/Subtitle';
+import VideoPlayer from './pages/EditPage/VideoPlayer';
 
 function App() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
