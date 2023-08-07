@@ -6,4 +6,5 @@ body {
 
 body, button, input, textarea {
   font-family: 'Roboto', sans-serif; /* Fallback to sans-serif if Roboto doesn't load */
+  color: white
 }

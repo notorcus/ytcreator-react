@@ -25,7 +25,8 @@ const DropBox = () => {
     } else {
       const data = await response.json();
       console.log(data);
-      navigate('/videos'); // Navigate to the Videos page after successful fetch
+      sessionStorage.setItem('videoData', JSON.stringify(data));
+      navigate('/videos');
     }
   }
 
