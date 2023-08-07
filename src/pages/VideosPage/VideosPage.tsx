@@ -1,14 +1,18 @@
-import { useLocation } from 'react-router-dom';
+// VideosPage.tsx
+import { Video } from '../../types/video'; 
+import './VideosPage.css';
 
 const VideosPage = () => {
-  const location = useLocation();
   const videoData = JSON.parse(sessionStorage.getItem('videoData') || '{}');
-  const videoCount = videoData?.data?.videos?.length || 0; 
-  
+  const videos = videoData?.data?.videos || [];
 
   return (
     <div className="videosPage">
-      <h2>Total Videos: {videoCount}</h2>
+      {videos.map((_video: Video, index: number) => (
+        <div key={index} className="videoBox">
+            Video {index + 1}
+        </div>
+      ))}
     </div>
   );
 }

@@ -1,6 +1,18 @@
 .videosPage {
-    text-align: center;
-    padding: 20px 0;  /* Adjust padding as needed */
     color: white;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;  /* Spread boxes horizontally */
+  }
+  
+  .videoBox {
+    width: 150px;  /* Adjust as desired */
+    height: 150px;
+    background-color: #0f4e7799;  /* Adjust the background color as desired */
+    border-radius: 10px;  /* Rounded corners */
+    margin: 20px;  /* Spacing between boxes */
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   
