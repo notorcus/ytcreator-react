@@ -1,46 +1,7 @@
-/* App.css */
 .App {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
   background-color: #121212;
-}
-
-.main-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 95vw;
-  height: 80vh;
-}
-
-.large-wrapper {
-  width: 65%;
-  height: 100%;
-  background: #1e1e1e;
-  color: white;
-  margin: 40px 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 20px;
-  overflow: hidden;
-}
-
-.video-player-wrapper {
-  width: 70%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 20px;
-}
-
-.transcript-wrapper {
-  border-radius: 10px;
-  flex-grow: 1;
-  margin: 20px;
-  width: 30%;
-  height: 100%;
-  overflow: auto;
 }
