@@ -1,6 +1,6 @@
 // TranscriptEntry.tsx
 import React from 'react';
-import Word from '../../components/Word';
+import Word from './Word';
 
 interface WordType {
     word: string;

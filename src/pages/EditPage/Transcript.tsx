@@ -1,6 +1,6 @@
 // Transcript.tsx
 import React, { useState, useEffect } from 'react';
-import Word from '../../components/Word';
+import Word from './Word';
 import './Transcript.css';
 
 interface WordType {
