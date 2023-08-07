@@ -1,0 +1,29 @@
+.navBar {
+    background-color: #1e1e1e;
+    padding: 10px;
+    border-radius: 0px;
+    margin-bottom: 20px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: start;
+  }
+  
+  .navBar ul {
+    list-style-type: none;
+    padding: 0px;
+    display: flex;
+    justify-content: start;
+    margin-left: 30px;
+  }
+  
+  .navBar ul li {
+    margin-right: 20px;
+  }
+  
+  .navBar ul li a {
+    color: white;
+    text-decoration: none;
+  }
+  
