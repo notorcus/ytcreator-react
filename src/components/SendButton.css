@@ -1,0 +1,15 @@
+.sendButton {
+    padding: 10px;
+    margin-left: 10px;
+    background-color: #1c2e4a;
+    color: rgb(209, 209, 209);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.25s ease-in-out;
+  }
+  
+  .sendButton:hover {
+    background-color: #23395d;
+  }
+  

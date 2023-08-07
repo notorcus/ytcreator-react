@@ -1,10 +1,10 @@
-.dropBox {
+.dropBoxContainer  {
     display: flex;
     justify-content: center;
     margin-top: 20px;
-  }
+}
   
-  .dropBox input {
+.dropBoxContainer input {
     width: 100%;
     padding: 15px;
     background-color: #161b22; 
@@ -12,9 +12,9 @@
     border: 2px solid transparent; /* Add a transparent border */
     border-radius: 5px;
     transition: border 0.125s ease-in-out; /* Optional: Smooth transition of border color */
-  }
+}
   
-  .dropBox input:focus {
+.dropBoxContainer input:focus {
     outline: none; /* Removes the default browser outline */
     border: 2px solid #5F6368; /* Adds a new border when focused */
-  }
+}
