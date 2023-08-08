@@ -15,6 +15,10 @@ const EditPage = () => {
   const [subtitles, setSubtitles] = useState<Subtitle[]>([]);
   const [currentSubtitleIndex, setCurrentSubtitleIndex] = useState<number | null>(null);
 
+  // New state for managing active word times
+  const [startTime, setStartTime] = useState<number>(0);
+  const [endTime, setEndTime] = useState<number>(0);
+
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -55,16 +59,22 @@ const EditPage = () => {
     video.currentTime = time;
   };
 
+  // New callback for active word times
+  const handleActiveWordsChange = (start: number, end: number) => {
+    setStartTime(start);
+    setEndTime(end);
+  };
+
   return (
     <div className="EditPage">
       <div className="main-content">
         <div className="large-wrapper">
           <div className="video-player-wrapper">
-            <VideoPlayer videoRef={videoRef} currentSubtitle={currentSubtitleIndex !== null ? subtitles[currentSubtitleIndex] : null} startTime={5} endTime={10} />
+            <VideoPlayer videoRef={videoRef} currentSubtitle={currentSubtitleIndex !== null ? subtitles[currentSubtitleIndex] : null} startTime={startTime} endTime={endTime} />
           </div>
         </div>
         <div className="transcript-wrapper">
-          <Transcript currentTime={currentTime} onWordClick={handleWordClick} playing={playing} setSubtitles={setSubtitles} />
+          <Transcript currentTime={currentTime} onWordClick={handleWordClick} playing={playing} setSubtitles={setSubtitles} onActiveWordsChange={handleActiveWordsChange} />
         </div>
       </div>
     </div>

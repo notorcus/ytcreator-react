@@ -31,6 +31,7 @@ interface TranscriptProps {
   onWordClick: (time: number) => void;
   playing: boolean;
   setSubtitles: (subtitles: Subtitle[]) => void;
+  onActiveWordsChange: (start: number, end: number) => void;  // Add this line
 }
 
 const computeSubtitles = (words: WordType[]): Subtitle[] => {
@@ -68,7 +69,7 @@ const computeSubtitles = (words: WordType[]): Subtitle[] => {
   return subtitles;
 };
 
-const Transcript: React.FC<TranscriptProps> = ({ currentTime, onWordClick, playing, setSubtitles }) => {
+const Transcript: React.FC<TranscriptProps> = ({ currentTime, onWordClick, playing, setSubtitles, onActiveWordsChange }) => {
   const [words, setWords] = useState<WordType[]>([]);
   const [clickedWordIndex, setClickedWordIndex] = useState<number | null>(null);
 
@@ -76,8 +77,8 @@ const Transcript: React.FC<TranscriptProps> = ({ currentTime, onWordClick, playi
     fetch('/MW Hormozi.json')
       .then((res) => res.json())
       .then((data: Entry[]) => {
-        const specifiedStartTime = 10; // Example start time, adjust dynamically
-        const specifiedEndTime = 30;  // Example end time, adjust dynamically
+        const specifiedStartTime = 20; // Example start time, adjust dynamically
+        const specifiedEndTime = 40;  // Example end time, adjust dynamically
   
         const activeWords = data.flatMap(entry => entry.words.map(word => ({
           ...word,
@@ -91,11 +92,7 @@ const Transcript: React.FC<TranscriptProps> = ({ currentTime, onWordClick, playi
         const lastActiveWord = [...activeWords].reverse().find(word => word.isActive);
         
         if (firstActiveWord && lastActiveWord) {
-          // Pass the start and end times to the VideoPlayer component.
-          // This would ideally be done using context or lifted state.
-          // For now, let's just log them.
-          console.log("Playback Start Time:", firstActiveWord.start);
-          console.log("Playback End Time:", lastActiveWord.end);
+          onActiveWordsChange(firstActiveWord.start, lastActiveWord.end);  // Call the callback with the determined times
         }
       })
       .catch((err) => console.error("Error loading JSON file:", err));
