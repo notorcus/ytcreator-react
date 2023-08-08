@@ -3,8 +3,11 @@ import './EditPage.css';
 import Transcript from './Transcript';
 import { Subtitle } from './Subtitle';
 import VideoPlayer from './VideoPlayer';
+import { useParams } from 'react-router-dom';
 
-function EditPage() {
+const EditPage = () => {
+  const { videoId } = useParams<{ videoId: string }>();
+  const videoIndex = parseInt(videoId || "1", 10) - 1;
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [playing, setPlaying] = useState(false);
