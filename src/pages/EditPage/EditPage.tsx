@@ -60,7 +60,7 @@ const EditPage = () => {
       <div className="main-content">
         <div className="large-wrapper">
           <div className="video-player-wrapper">
-            <VideoPlayer videoRef={videoRef} currentSubtitle={currentSubtitleIndex !== null ? subtitles[currentSubtitleIndex] : null} />
+            <VideoPlayer videoRef={videoRef} currentSubtitle={currentSubtitleIndex !== null ? subtitles[currentSubtitleIndex] : null} startTime={5} endTime={10} />
           </div>
         </div>
         <div className="transcript-wrapper">
