@@ -12,3 +12,7 @@
 .word.clicked {
     background-color: #10527e;
 }
+
+.word.inactive {
+    color: gray;
+  }  

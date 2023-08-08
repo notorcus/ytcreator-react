@@ -9,6 +9,7 @@ interface WordType {
   end: number;
   score: number;
   speaker: string;
+  isActive: boolean; // New property
 }
 
 interface Entry {
@@ -75,12 +76,30 @@ const Transcript: React.FC<TranscriptProps> = ({ currentTime, onWordClick, playi
     fetch('/MW Hormozi.json')
       .then((res) => res.json())
       .then((data: Entry[]) => {
-        const words = data.flatMap(entry => entry.words);
-        setWords(words);
-        setSubtitles(computeSubtitles(words));
+        const specifiedStartTime = 10; // Example start time, adjust dynamically
+        const specifiedEndTime = 30;  // Example end time, adjust dynamically
+  
+        const activeWords = data.flatMap(entry => entry.words.map(word => ({
+          ...word,
+          isActive: word.start >= specifiedStartTime && word.end <= specifiedEndTime
+        })));
+        setWords(activeWords);
+        setSubtitles(computeSubtitles(activeWords));
+
+        // Control video playback based on active words
+        const firstActiveWord = activeWords.find(word => word.isActive);
+        const lastActiveWord = [...activeWords].reverse().find(word => word.isActive);
+        
+        if (firstActiveWord && lastActiveWord) {
+          // Pass the start and end times to the VideoPlayer component.
+          // This would ideally be done using context or lifted state.
+          // For now, let's just log them.
+          console.log("Playback Start Time:", firstActiveWord.start);
+          console.log("Playback End Time:", lastActiveWord.end);
+        }
       })
       .catch((err) => console.error("Error loading JSON file:", err));
-  }, []);
+  }, []);  
 
   useEffect(() => {
     if (playing) {

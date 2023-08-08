@@ -31,13 +31,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoRef, currentSubtitle, st
       if (video.currentTime >= endTime) {
         video.pause();
         setIsPlaying(false);
-        video.currentTime = startTime;
-      }
-    };
-
-    const handleSeeked = () => {
-      if (video.currentTime < startTime || video.currentTime > endTime) {
-        video.currentTime = startTime;
+        video.currentTime = startTime;  // Set the video to the start time once it reaches the end time.
       }
     };
 
@@ -45,6 +39,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoRef, currentSubtitle, st
       if (isPlaying) {
         video.pause();
       } else {
+        if (video.currentTime < startTime || video.currentTime > endTime) {
+          video.currentTime = startTime;  // Ensure the video starts from the designated start time.
+        }
         video.play();
       }
       setIsPlaying(!isPlaying);
@@ -52,13 +49,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoRef, currentSubtitle, st
 
     video.addEventListener('loadedmetadata', handleMetadataLoaded);
     video.addEventListener('timeupdate', handleTimeUpdate);
-    video.addEventListener('seeked', handleSeeked);
     video.addEventListener('click', handleClick);
 
     return () => {
       video.removeEventListener('loadedmetadata', handleMetadataLoaded);
       video.removeEventListener('timeupdate', handleTimeUpdate);
-      video.removeEventListener('seeked', handleSeeked);
       video.removeEventListener('click', handleClick);
     };
   }, [videoRef, isPlaying, startTime, endTime]);
