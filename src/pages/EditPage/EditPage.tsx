@@ -39,7 +39,6 @@ const EditPage = () => {
           subtitle.end >= video.currentTime &&
           (i === subtitles.length - 1 || subtitles[i + 1].start > video.currentTime)
       );
-      console.log("Determined subtitle index:", index);
       setCurrentSubtitleIndex(index === -1 ? null : index);
     };
 
