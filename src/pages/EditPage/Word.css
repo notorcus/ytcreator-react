@@ -15,4 +15,6 @@
 
 .word.inactive {
     color: gray;
+    pointer-events: none; /* This will make the element non-interactive */
+    user-select: none; /* Prevents the user from selecting the text */
   }  
