@@ -4,6 +4,12 @@ import Transcript from './Transcript';
 import { Subtitle } from './Subtitle';
 import VideoPlayer from './VideoPlayer';
 import { useParams } from 'react-router-dom';
+import { useVideoData } from './VideoContext'; // Import the hook
+
+const timeStringToSeconds = (time: string): number => {
+  const [hours, minutes, seconds] = time.split(':').map(Number);
+  return (hours * 3600) + (minutes * 60) + seconds;
+};
 
 const EditPage = () => {
   const { videoId } = useParams<{ videoId: string }>();
@@ -11,13 +17,15 @@ const EditPage = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [playing, setPlaying] = useState(false);
-
   const [subtitles, setSubtitles] = useState<Subtitle[]>([]);
   const [currentSubtitleIndex, setCurrentSubtitleIndex] = useState<number | null>(null);
 
-  // New state for managing active word times
-  const [startTime, setStartTime] = useState<number>(0);
-  const [endTime, setEndTime] = useState<number>(0);
+  // Use the context to retrieve videoData
+  const { videoData } = useVideoData();
+  const videos = videoData.data.videos || [];
+
+  const videoStartTime = videos[videoIndex]?.start_time ? timeStringToSeconds(videos[videoIndex].start_time) : 0;
+  const videoEndTime = videos[videoIndex]?.end_time ? timeStringToSeconds(videos[videoIndex].end_time) : 0;
 
   useEffect(() => {
     const video = videoRef.current;
@@ -31,6 +39,7 @@ const EditPage = () => {
           subtitle.end >= video.currentTime &&
           (i === subtitles.length - 1 || subtitles[i + 1].start > video.currentTime)
       );
+      console.log("Determined subtitle index:", index);
       setCurrentSubtitleIndex(index === -1 ? null : index);
     };
 
@@ -45,6 +54,7 @@ const EditPage = () => {
     video.addEventListener('timeupdate', handleTimeUpdate);
     video.addEventListener('play', handlePlay);
     video.addEventListener('pause', handlePause);
+
     return () => {
       video.removeEventListener('timeupdate', handleTimeUpdate);
       video.removeEventListener('play', handlePlay);
@@ -55,14 +65,7 @@ const EditPage = () => {
   const handleWordClick = (time: number) => {
     const video = videoRef.current;
     if (!video) return;
-  
     video.currentTime = time;
-  };
-
-  // New callback for active word times
-  const handleActiveWordsChange = (start: number, end: number) => {
-    setStartTime(start);
-    setEndTime(end);
   };
 
   return (
@@ -70,11 +73,19 @@ const EditPage = () => {
       <div className="main-content">
         <div className="large-wrapper">
           <div className="video-player-wrapper">
-            <VideoPlayer videoRef={videoRef} currentSubtitle={currentSubtitleIndex !== null ? subtitles[currentSubtitleIndex] : null} startTime={startTime} endTime={endTime} />
+            <VideoPlayer videoRef={videoRef} currentSubtitle={currentSubtitleIndex !== null ? subtitles[currentSubtitleIndex] : null} startTime={videoStartTime} endTime={videoEndTime} />
           </div>
         </div>
         <div className="transcript-wrapper">
-          <Transcript currentTime={currentTime} onWordClick={handleWordClick} playing={playing} setSubtitles={setSubtitles} onActiveWordsChange={handleActiveWordsChange} />
+        <Transcript 
+          currentTime={currentTime} 
+          onWordClick={handleWordClick} 
+          playing={playing} 
+          setSubtitles={setSubtitles} 
+          onActiveWordsChange={() => {}} 
+          startTime={videoStartTime} 
+          endTime={videoEndTime}
+        />
         </div>
       </div>
     </div>

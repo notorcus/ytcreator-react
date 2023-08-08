@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Word from './Word';
 import './Transcript.css';
 
-interface WordType {
+export interface WordType {
   word: string;
   start: number;
   end: number;
@@ -30,9 +30,12 @@ interface TranscriptProps {
   currentTime: number;
   onWordClick: (time: number) => void;
   playing: boolean;
-  setSubtitles: (subtitles: Subtitle[]) => void;
-  onActiveWordsChange: (start: number, end: number) => void;  // Add this line
+  setSubtitles: React.Dispatch<React.SetStateAction<Subtitle[]>>;
+  onActiveWordsChange: (start: number, end: number) => void;
+  startTime: number;
+  endTime: number;
 }
+
 
 const computeSubtitles = (words: WordType[]): Subtitle[] => {
   const groups: WordType[][] = [];
@@ -69,7 +72,15 @@ const computeSubtitles = (words: WordType[]): Subtitle[] => {
   return subtitles;
 };
 
-const Transcript: React.FC<TranscriptProps> = ({ currentTime, onWordClick, playing, setSubtitles, onActiveWordsChange }) => {
+const Transcript: React.FC<TranscriptProps> = ({ 
+  currentTime, 
+  onWordClick, 
+  playing, 
+  setSubtitles, 
+  onActiveWordsChange,
+  startTime,
+  endTime,
+}) => {
   const [words, setWords] = useState<WordType[]>([]);
   const [clickedWordIndex, setClickedWordIndex] = useState<number | null>(null);
 
@@ -77,12 +88,9 @@ const Transcript: React.FC<TranscriptProps> = ({ currentTime, onWordClick, playi
     fetch('/MW Hormozi.json')
       .then((res) => res.json())
       .then((data: Entry[]) => {
-        const specifiedStartTime = 20; // Example start time, adjust dynamically
-        const specifiedEndTime = 40;  // Example end time, adjust dynamically
-  
         const activeWords = data.flatMap(entry => entry.words.map(word => ({
           ...word,
-          isActive: word.start >= specifiedStartTime && word.end <= specifiedEndTime
+          isActive: word.start >= startTime && word.end <= endTime
         })));
         setWords(activeWords);
         setSubtitles(computeSubtitles(activeWords));
@@ -92,11 +100,12 @@ const Transcript: React.FC<TranscriptProps> = ({ currentTime, onWordClick, playi
         const lastActiveWord = [...activeWords].reverse().find(word => word.isActive);
         
         if (firstActiveWord && lastActiveWord) {
-          onActiveWordsChange(firstActiveWord.start, lastActiveWord.end);  // Call the callback with the determined times
+          onActiveWordsChange(firstActiveWord.start, lastActiveWord.end);
         }
       })
       .catch((err) => console.error("Error loading JSON file:", err));
-  }, []);  
+  }, [startTime, endTime]); 
+
 
   useEffect(() => {
     if (playing) {
