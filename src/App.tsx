@@ -1,72 +1,28 @@
-// App.tsx
-import { useRef, useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
-import Transcript from './components/Transcript';
-import { Subtitle } from './components/Subtitle';
-import VideoPlayer from './components/VideoPlayer';
+import NavBar from './components/NavBar';
+import HomePage from './pages/HomePage/HomePage';
+import EditPage from './pages/EditPage/EditPage';
+import VideosPage from './pages/VideosPage/VideosPage';
+import { VideoProvider } from './pages/EditPage/VideoContext'; // Adjust the path accordingly
 
 function App() {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [playing, setPlaying] = useState(false);
-
-  const [subtitles, setSubtitles] = useState<Subtitle[]>([]);
-  const [currentSubtitleIndex, setCurrentSubtitleIndex] = useState<number | null>(null);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    const handleTimeUpdate = () => {
-      setCurrentTime(video.currentTime);
-      const index = subtitles.findIndex(
-        (subtitle, i) =>
-          subtitle.start <= video.currentTime &&
-          subtitle.end >= video.currentTime &&
-          (i === subtitles.length - 1 || subtitles[i + 1].start > video.currentTime)
-      );
-      setCurrentSubtitleIndex(index === -1 ? null : index);
-    };
-
-    const handlePlay = () => {
-      setPlaying(true);
-    };
-
-    const handlePause = () => {
-      setPlaying(false);
-    };
-
-    video.addEventListener('timeupdate', handleTimeUpdate);
-    video.addEventListener('play', handlePlay);
-    video.addEventListener('pause', handlePause);
-    return () => {
-      video.removeEventListener('timeupdate', handleTimeUpdate);
-      video.removeEventListener('play', handlePlay);
-      video.removeEventListener('pause', handlePause);
-    };
-  }, [videoRef, subtitles]);
-
-  const handleWordClick = (time: number) => {
-    const video = videoRef.current;
-    if (!video) return;
-  
-    video.currentTime = time;
-  };
-
   return (
-    <div className="App">
-      <div className="main-content">
-        <div className="large-wrapper">
-          <div className="video-player-wrapper">
-            <VideoPlayer videoRef={videoRef} currentSubtitle={currentSubtitleIndex !== null ? subtitles[currentSubtitleIndex] : null} />
-          </div>
+    <VideoProvider>
+      <Router>
+        <div className="App">
+          <NavBar />
+          <Routes>
+            <Route path="/videos" element={<VideosPage />} />
+            <Route path="/edit" element={<EditPage />} />
+            <Route path="/edit/:videoId" element={<EditPage />} />
+            <Route path="/" element={<HomePage />} />
+          </Routes>
         </div>
-        <div className="transcript-wrapper">
-          <Transcript currentTime={currentTime} onWordClick={handleWordClick} playing={playing} setSubtitles={setSubtitles} />
-        </div>
-      </div>
-    </div>
+      </Router>
+    </VideoProvider>
   );
 }
 
 export default App;
+

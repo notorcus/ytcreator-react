@@ -3,12 +3,13 @@ import React, { useState, useEffect } from 'react';
 import Word from './Word';
 import './Transcript.css';
 
-interface WordType {
+export interface WordType {
   word: string;
   start: number;
   end: number;
   score: number;
   speaker: string;
+  isActive: boolean; // New property
 }
 
 interface Entry {
@@ -29,8 +30,12 @@ interface TranscriptProps {
   currentTime: number;
   onWordClick: (time: number) => void;
   playing: boolean;
-  setSubtitles: (subtitles: Subtitle[]) => void;
+  setSubtitles: React.Dispatch<React.SetStateAction<Subtitle[]>>;
+  onActiveWordsChange: (start: number, end: number) => void;
+  startTime: number;
+  endTime: number;
 }
+
 
 const computeSubtitles = (words: WordType[]): Subtitle[] => {
   const groups: WordType[][] = [];
@@ -67,7 +72,15 @@ const computeSubtitles = (words: WordType[]): Subtitle[] => {
   return subtitles;
 };
 
-const Transcript: React.FC<TranscriptProps> = ({ currentTime, onWordClick, playing, setSubtitles }) => {
+const Transcript: React.FC<TranscriptProps> = ({ 
+  currentTime, 
+  onWordClick, 
+  playing, 
+  setSubtitles, 
+  onActiveWordsChange,
+  startTime,
+  endTime,
+}) => {
   const [words, setWords] = useState<WordType[]>([]);
   const [clickedWordIndex, setClickedWordIndex] = useState<number | null>(null);
 
@@ -75,12 +88,24 @@ const Transcript: React.FC<TranscriptProps> = ({ currentTime, onWordClick, playi
     fetch('/MW Hormozi.json')
       .then((res) => res.json())
       .then((data: Entry[]) => {
-        const words = data.flatMap(entry => entry.words);
-        setWords(words);
-        setSubtitles(computeSubtitles(words));
+        const activeWords = data.flatMap(entry => entry.words.map(word => ({
+          ...word,
+          isActive: word.start >= startTime && word.end <= endTime
+        })));
+        setWords(activeWords);
+        setSubtitles(computeSubtitles(activeWords));
+
+        // Control video playback based on active words
+        const firstActiveWord = activeWords.find(word => word.isActive);
+        const lastActiveWord = [...activeWords].reverse().find(word => word.isActive);
+        
+        if (firstActiveWord && lastActiveWord) {
+          onActiveWordsChange(firstActiveWord.start, lastActiveWord.end);
+        }
       })
       .catch((err) => console.error("Error loading JSON file:", err));
-  }, []);
+  }, [startTime, endTime]); 
+
 
   useEffect(() => {
     if (playing) {

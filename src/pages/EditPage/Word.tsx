@@ -8,6 +8,7 @@ interface WordType {
   end: number;
   score: number;
   speaker: string;
+  isActive: boolean; // New property
 }
 
 interface WordProps {
@@ -60,7 +61,7 @@ const Word: React.FC<WordProps> = ({ word, onClick, isClicked, onWordChange }) =
     />
   ) : (
     <span
-      className={`word ${isHovered ? 'highlight' : ''} ${isClicked ? 'clicked' : ''}`}
+      className={`word ${isHovered ? 'highlight' : ''} ${isClicked ? 'clicked' : ''} ${!word.isActive ? 'inactive' : ''}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={onClick}

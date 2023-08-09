@@ -1,0 +1,20 @@
+/* Word.css */
+.word {
+    transition: background-color 0.1s ease;
+    padding: 2px 4px;
+    border-radius: 4px;
+    }
+
+.word.highlight {
+    background-color: #0f4e7799;
+}
+
+.word.clicked {
+    background-color: #10527e;
+}
+
+.word.inactive {
+    color: gray;
+    pointer-events: none; /* This will make the element non-interactive */
+    user-select: none; /* Prevents the user from selecting the text */
+  }  
