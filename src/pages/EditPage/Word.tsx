@@ -61,14 +61,15 @@ const Word: React.FC<WordProps> = ({ word, onClick, isClicked, onWordChange }) =
     />
   ) : (
     <span
-      className={`word ${isHovered ? 'highlight' : ''} ${isClicked ? 'clicked' : ''} ${!word.isActive ? 'inactive' : ''}`}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onClick={onClick}
-      onDoubleClick={handleDoubleClick}
+        className={`word ${isHovered ? 'highlight' : ''} ${isClicked ? 'clicked' : ''} ${word.isActive ? 'active' : 'inactive'}`}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onClick={onClick}
+        onDoubleClick={handleDoubleClick}
     >
-      {word.word + ' '}
+        {word.word + ' '}
     </span>
+
   );
 };
 

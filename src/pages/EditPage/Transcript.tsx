@@ -72,6 +72,8 @@ const computeSubtitles = (words: WordType[]): Subtitle[] => {
   return subtitles;
 };
 
+type WordGroupType = WordType | { isActiveGroup: true; words: WordType[] };
+
 const Transcript: React.FC<TranscriptProps> = ({ 
   currentTime, 
   onWordClick, 
@@ -129,19 +131,56 @@ const Transcript: React.FC<TranscriptProps> = ({
     word => word.start <= currentTime && word.end >= currentTime
   );
 
+  const groupedWords: WordGroupType[] = [];
+  let group: WordType[] = [];
+  
+  words.forEach((word: WordType, index: number) => {
+      if (word.isActive) {
+          group.push(word);
+      } else {
+          if (group.length > 0) {
+              groupedWords.push({ isActiveGroup: true, words: group });
+              group = [];
+          }
+          groupedWords.push(word);
+      }
+      if (index === words.length - 1 && group.length > 0) {
+          groupedWords.push({ isActiveGroup: true, words: group });
+      }
+  });
+  
   return (
-    <div className="transcript">
-      {words.map((word, i) => (
-        <Word 
-          key={i} 
-          word={word} 
-          onClick={() => handleClick(i)} 
-          isClicked={i === clickedWordIndex || i === currentWordIndex} 
-          onWordChange={(newWord) => handleWordChange(newWord, i)}
-        />
-      ))}
-    </div>
+      <div className="transcript">
+          {groupedWords.map((item, i) => {
+              if ('isActiveGroup' in item) {
+                  return (
+                      <span key={i} className="activeGroup">
+                          {item.words.map((word: WordType, j: number) => (
+                              <Word 
+                                  key={j} 
+                                  word={word} 
+                                  onClick={() => handleClick(j)} 
+                                  isClicked={j === clickedWordIndex || j === currentWordIndex} 
+                                  onWordChange={(newWord) => handleWordChange(newWord, j)}
+                              />
+                          ))}
+                      </span>
+                  );
+              } else {
+                  return (
+                      <Word 
+                          key={i} 
+                          word={item as WordType} 
+                          onClick={() => handleClick(i)} 
+                          isClicked={i === clickedWordIndex || i === currentWordIndex} 
+                          onWordChange={(newWord) => handleWordChange(newWord, i)}
+                      />
+                  );
+              }
+          })}
+      </div>
   );
+  
 };
 
 export default Transcript;
