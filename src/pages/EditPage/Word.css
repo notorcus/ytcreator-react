@@ -1,20 +1,13 @@
 /* Word.css */
 .word {
     transition: background-color 0.1s ease;
-    /*padding: 2px 4px;*/
     cursor: pointer;
+    display: inline-block;
     }
 
 .word.highlight {
     background-color: #0f4e7799;
 }
-
-/*
-.word.clicked {
-    background-color: #3b8b66;
-    border-radius: 4px;
-}
-*/
 
 .word.inactive {
     color: gray;
@@ -25,4 +18,9 @@
   .word.multiple-select {
     background-color: #10527e;
     color: white;
+}
+
+.word.clicked {
+    background-color: #10527e;
+    border-radius: 4px;
 }

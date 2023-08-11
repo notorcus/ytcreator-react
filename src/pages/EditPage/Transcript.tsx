@@ -75,7 +75,7 @@ const computeSubtitles = (words: WordType[]): Subtitle[] => {
 };
 
 const Transcript: React.FC<TranscriptProps> = ({ 
-  currentTime, 
+  //currentTime, 
   onWordClick, 
   playing, 
   setSubtitles, 
@@ -127,7 +127,6 @@ const Transcript: React.FC<TranscriptProps> = ({
         const range = selectedText.getRangeAt(0);
         const rect = range.getBoundingClientRect();
         setAnchorPosition({ top: rect.top, left: rect.left });
-        setIsTextSelected(true);
 
         // Directly extract the index from the data attribute
         const anchorElement = selectedText.anchorNode?.parentElement;
@@ -142,17 +141,29 @@ const Transcript: React.FC<TranscriptProps> = ({
                 const endIndex = parseInt(endIndexStr, 10);
 
                 setSelectedWordIndices({ start: startIndex, end: endIndex });  // Update the selected indices state
-
                 const selectedWordsArray = words.slice(startIndex, endIndex + 1).map(w => w.word);
                 setSelectedWords(selectedWordsArray);
                 
+                if (selectedWordIndices) {
+                    const selectedWordsActiveStatus = words.slice(startIndex, endIndex + 1).map(w => w.isActive);
+                    if (selectedWordsActiveStatus.every(status => status)) {
+                        setAction("Remove");
+                    } else {
+                        setAction("Add");
+                    }
+                }
             }
         }
+        setIsTextSelected(true);  // Then set the isTextSelected state
     } else {
         setIsTextSelected(false);
     }
-    window.getSelection().removeAllRanges();
-  };
+    
+    // Safeguard against potential null or undefined values
+    if (selectedText) {
+        selectedText.removeAllRanges();
+    }
+};
 
   const handleClick = (index: number) => {
     setClickedWordIndex(index);
@@ -169,6 +180,15 @@ const Transcript: React.FC<TranscriptProps> = ({
     setSubtitles(computeSubtitles(newWords));
   };
 
+  const handleActionButtonClick = () => {
+    if (selectedWordIndices) {
+        const updatedWords = [...words];
+        for (let i = selectedWordIndices.start; i <= selectedWordIndices.end; i++) {
+            updatedWords[i].isActive = action === "Add";
+        }
+        setWords(updatedWords);
+      }
+    };
 
   return (
     <div className="transcript" onMouseUp={handleMouseUp}>
@@ -185,7 +205,12 @@ const Transcript: React.FC<TranscriptProps> = ({
       <Popover
         isOpen={isTextSelected}
         positions={['top', 'right', 'bottom', 'left']}
-        content={<PopoverBox action={selectedWords[0]} />}
+        content={
+            <PopoverBox 
+                action={action} 
+                onActionButtonClick={handleActionButtonClick}
+            />
+          }
       >
         <span style={{ position: 'absolute', top: anchorPosition?.top, left: anchorPosition?.left }}></span>
       </Popover>
