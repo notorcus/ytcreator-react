@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Word from './Word';
 import './Transcript.css';
 import { Popover } from 'react-tiny-popover';
+import PopoverBox from './PopoverBox';
 
 export interface WordType {
   word: string;
@@ -169,17 +170,12 @@ const Transcript: React.FC<TranscriptProps> = ({
         />
       ))}
       <Popover
-        isOpen={isTextSelected}
-        positions={['top', 'right', 'bottom', 'left']}
-        content={
-          <div>
-            Actions for selected text: {selectedWords.length > 0 ? selectedWords[0] : ''}
-          </div>
-        }
+          isOpen={isTextSelected}
+          positions={['top', 'right', 'bottom', 'left']}
+          content={<PopoverBox content={`Actions for selected text: ${selectedWords.length > 0 ? selectedWords[0] : ''}`} />}
       >
-        <span style={{ position: 'absolute', top: anchorPosition?.top, left: anchorPosition?.left }}></span>
+          <span style={{ position: 'absolute', top: anchorPosition?.top, left: anchorPosition?.left }}></span>
       </Popover>
-
     </div>
   );
 };
