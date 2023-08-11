@@ -12,7 +12,7 @@ border-radius: 20px;
 color: white;  
 font-family: Arial, sans-serif;
 font-size: 21px;
-word-spacing: -3.5px;
+word-spacing: 0px;
 line-height: 1.55;
 max-width: 800px;
 margin: 0 auto;
@@ -43,4 +43,9 @@ overflow-y: auto;
 
 .transcript::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.801);
+}
+
+.transcript ::selection {
+  background-color: #004D8B;  /* a shade of blue */
+  color: white;  /* text color */
 }

@@ -11,7 +11,7 @@ export interface WordType {
   end: number;
   score: number;
   speaker: string;
-  isActive: boolean; // New property
+  isActive: boolean;
 }
 
 interface Entry {
@@ -88,7 +88,7 @@ const Transcript: React.FC<TranscriptProps> = ({
   const [isTextSelected, setIsTextSelected] = useState(false);
   const [selectedWords, setSelectedWords] = useState<string[]>([]);
   const [anchorPosition, setAnchorPosition] = useState<{ top: number, left: number } | null>(null);
-
+  const [action, setAction] = useState<string>("Add");
 
   useEffect(() => {
     fetch('/MW Hormozi.json')
@@ -126,7 +126,13 @@ const Transcript: React.FC<TranscriptProps> = ({
       const range = selectedText.getRangeAt(0);
       const rect = range.getBoundingClientRect();
       setAnchorPosition({ top: rect.top, left: rect.left });
+
+      // Check if the selected text is active
+      const selectedTextStart = parseFloat((range.startContainer.parentNode as Element)?.getAttribute("data-start") || "0");
+      const selectedTextEnd = parseFloat((range.endContainer.parentNode as Element)?.getAttribute("data-end") || "0");
+      const isActive = words.some(word => word.isActive && word.start >= selectedTextStart && word.end <= selectedTextEnd);
       setIsTextSelected(true);
+      setSelectedWords(isActive ? ["Remove"] : ["Add"]);
     } else {
       setIsTextSelected(false);
     }
@@ -170,11 +176,11 @@ const Transcript: React.FC<TranscriptProps> = ({
         />
       ))}
       <Popover
-          isOpen={isTextSelected}
-          positions={['top', 'right', 'bottom', 'left']}
-          content={<PopoverBox content={`Actions for selected text: ${selectedWords.length > 0 ? selectedWords[0] : ''}`} />}
+        isOpen={isTextSelected}
+        positions={['top', 'right', 'bottom', 'left']}
+        content={<PopoverBox action={selectedWords[0]} />}
       >
-          <span style={{ position: 'absolute', top: anchorPosition?.top, left: anchorPosition?.left }}></span>
+        <span style={{ position: 'absolute', top: anchorPosition?.top, left: anchorPosition?.left }}></span>
       </Popover>
     </div>
   );
