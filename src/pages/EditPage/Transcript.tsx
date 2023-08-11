@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Word from './Word';
 import './Transcript.css';
+import { Popover } from 'react-tiny-popover';
 
 export interface WordType {
   word: string;
@@ -83,6 +84,10 @@ const Transcript: React.FC<TranscriptProps> = ({
 }) => {
   const [words, setWords] = useState<WordType[]>([]);
   const [clickedWordIndex, setClickedWordIndex] = useState<number | null>(null);
+  const [isTextSelected, setIsTextSelected] = useState(false);
+  const [selectedWords, setSelectedWords] = useState<string[]>([]);
+  const [anchorPosition, setAnchorPosition] = useState<{ top: number, left: number } | null>(null);
+
 
   useEffect(() => {
     fetch('/MW Hormozi.json')
@@ -113,10 +118,33 @@ const Transcript: React.FC<TranscriptProps> = ({
     }
   }, [playing]);
 
+
+  const handleMouseUp = () => {
+    const selectedText = window.getSelection();
+    if (selectedText && selectedText.toString().length > 0) {
+      const range = selectedText.getRangeAt(0);
+      const rect = range.getBoundingClientRect();
+      setAnchorPosition({ top: rect.top, left: rect.left });
+      setIsTextSelected(true);
+    } else {
+      setIsTextSelected(false);
+    }
+  };
+  
+
+  useEffect(() => {
+      console.log("Is text selected:", isTextSelected);
+  }, [isTextSelected]);
+
+
   const handleClick = (index: number) => {
     setClickedWordIndex(index);
     onWordClick(words[index].start);
+
+    // Update the selected words
+    setSelectedWords([words[index].word]);
   };
+
 
   const handleWordChange = (newWord: string, index: number) => {
     const newWords = [...words];
@@ -130,7 +158,7 @@ const Transcript: React.FC<TranscriptProps> = ({
   );
 
   return (
-    <div className="transcript">
+    <div className="transcript" onMouseUp={handleMouseUp}>
       {words.map((word, i) => (
         <Word 
           key={i} 
@@ -140,6 +168,18 @@ const Transcript: React.FC<TranscriptProps> = ({
           onWordChange={(newWord) => handleWordChange(newWord, i)}
         />
       ))}
+      <Popover
+        isOpen={isTextSelected}
+        positions={['top', 'right', 'bottom', 'left']}
+        content={
+          <div>
+            Actions for selected text: {selectedWords.length > 0 ? selectedWords[0] : ''}
+          </div>
+        }
+      >
+        <span style={{ position: 'absolute', top: anchorPosition?.top, left: anchorPosition?.left }}></span>
+      </Popover>
+
     </div>
   );
 };
