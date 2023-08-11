@@ -2,19 +2,27 @@
 .word {
     transition: background-color 0.1s ease;
     /*padding: 2px 4px;*/
-    border-radius: 4px;
+    cursor: pointer;
     }
 
 .word.highlight {
     background-color: #0f4e7799;
 }
 
+/*
 .word.clicked {
-    background-color: #10527e;
+    background-color: #3b8b66;
+    border-radius: 4px;
 }
+*/
 
 .word.inactive {
     color: gray;
     /* pointer-events: none; /* This will make the element non-interactive */
     /* user-select: none;  /*Prevents the user from selecting the text */
   }  
+
+  .word.multiple-select {
+    background-color: #10527e;
+    color: white;
+}

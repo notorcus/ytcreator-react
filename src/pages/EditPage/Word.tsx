@@ -1,4 +1,3 @@
-// Word.tsx
 import React, { useState } from 'react';
 import './Word.css';
 
@@ -8,19 +7,18 @@ interface WordType {
   end: number;
   score: number;
   speaker: string;
-  isActive: boolean; // New property
+  isActive: boolean;
 }
 
 interface WordProps {
   word: WordType;
   onClick: () => void;
-  isClicked: boolean;
-  isSelected?: boolean;
   onWordChange: (newWord: string) => void;
   index: number;
+  selectedWordIndices: { start: number, end: number } | null;
 }
 
-const Word: React.FC<WordProps> = ({ word, onClick, isClicked, onWordChange, index, isSelected = false }) => {
+const Word: React.FC<WordProps> = ({ word, onClick, onWordChange, index, selectedWordIndices }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedWord, setEditedWord] = useState(word.word);
@@ -52,6 +50,9 @@ const Word: React.FC<WordProps> = ({ word, onClick, isClicked, onWordChange, ind
     }
   };
 
+  const isSingleClicked = selectedWordIndices && index === selectedWordIndices.start && index === selectedWordIndices.end;
+  const isPartOfSelection = selectedWordIndices && index >= selectedWordIndices.start && index <= selectedWordIndices.end;
+
   return isEditing ? (
     <input 
       type="text" 
@@ -63,14 +64,14 @@ const Word: React.FC<WordProps> = ({ word, onClick, isClicked, onWordChange, ind
     />
   ) : (
     <span
-      data-index={index}  // Added this line
-      className={`word ${isHovered ? 'highlight' : ''} ${isClicked || isSelected ? 'clicked' : ''} ${!word.isActive ? 'inactive' : ''}`}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onClick={onClick}
-      onDoubleClick={handleDoubleClick}
+        className={`word ${isHovered ? 'highlight' : ''} ${isSingleClicked ? 'clicked' : ''} ${!word.isActive ? 'inactive' : ''} ${isPartOfSelection ? 'multiple-select' : ''}`}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onClick={onClick}
+        onDoubleClick={handleDoubleClick}
+        data-index={index}
     >
-      {word.word + ' '}
+        {word.word + ' '}
     </span>
   );
 };

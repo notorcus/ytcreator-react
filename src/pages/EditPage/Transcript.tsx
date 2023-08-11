@@ -154,15 +154,12 @@ const Transcript: React.FC<TranscriptProps> = ({
     window.getSelection().removeAllRanges();
   };
 
-
-  useEffect(() => {
-  }, [isTextSelected]);
-
-
   const handleClick = (index: number) => {
     setClickedWordIndex(index);
+    setSelectedWordIndices({ start: index, end: index });
     onWordClick(words[index].start);
-};
+  };
+  
 
 
   const handleWordChange = (newWord: string, index: number) => {
@@ -172,9 +169,6 @@ const Transcript: React.FC<TranscriptProps> = ({
     setSubtitles(computeSubtitles(newWords));
   };
 
-  const currentWordIndex = words.findIndex(
-    word => word.start <= currentTime && word.end >= currentTime
-  );
 
   return (
     <div className="transcript" onMouseUp={handleMouseUp}>
@@ -183,10 +177,9 @@ const Transcript: React.FC<TranscriptProps> = ({
           key={i} 
           word={word} 
           onClick={() => handleClick(i)} 
-          isClicked={i === clickedWordIndex || i === currentWordIndex} 
           onWordChange={(newWord) => handleWordChange(newWord, i)}
           index={i}
-          isSelected={!!selectedWordIndices && i >= selectedWordIndices.start && i <= selectedWordIndices.end}
+          selectedWordIndices={selectedWordIndices}
         />
       ))}
       <Popover
