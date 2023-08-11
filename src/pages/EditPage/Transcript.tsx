@@ -4,6 +4,7 @@ import Word from './Word';
 import './Transcript.css';
 import { Popover } from 'react-tiny-popover';
 import PopoverBox from './PopoverBox';
+import WordPopover from './WordPopover';
 
 export interface WordType {
   word: string;
@@ -90,6 +91,7 @@ const Transcript: React.FC<TranscriptProps> = ({
   const [selectedWordIndices, setSelectedWordIndices] = useState<{ start: number, end: number } | null>(null);
   const [anchorPosition, setAnchorPosition] = useState<{ top: number, left: number } | null>(null);
   const [action, setAction] = useState<string>("Add");
+  const [relativePosition, setRelativePosition] = useState<'before' | 'after' | 'isolated'>();
 
   useEffect(() => {
     fetch('/MW Hormozi.json')
@@ -152,6 +154,9 @@ const Transcript: React.FC<TranscriptProps> = ({
                         setAction("Add");
                     }
                 }
+                if (selectedWordIndices && selectedWordIndices.start === selectedWordIndices.end) {
+                  determineRelativePosition(selectedWordIndices.start);
+              }
             }
         }
         setIsTextSelected(true);  // Then set the isTextSelected state
@@ -163,14 +168,42 @@ const Transcript: React.FC<TranscriptProps> = ({
     if (selectedText) {
         selectedText.removeAllRanges();
     }
-};
+  };
+
+
 
   const handleClick = (index: number) => {
     setClickedWordIndex(index);
     setSelectedWordIndices({ start: index, end: index });
+
+    // Get the bounding box of the clicked word to set the anchor position
+    const wordElement = document.querySelector(`[data-index="${index}"]`);
+    if (wordElement) {
+        const rect = wordElement.getBoundingClientRect();
+        setAnchorPosition({ top: rect.top, left: rect.left });
+    }
+
+    setIsTextSelected(true); // Show the popover when a word is clicked
+    determineRelativePosition(index);  // Determine the relative position
     onWordClick(words[index].start);
   };
-  
+
+
+
+  const determineRelativePosition = (index: number) => {
+    const selectedWord = words[index];
+    if (selectedWord.isActive) {
+        setRelativePosition('isolated');
+    } else {
+        const activeWords = words.filter(w => w.isActive);
+        const lastActiveWord = activeWords[activeWords.length - 1];
+        if (selectedWord.start < activeWords[0].start) {
+            setRelativePosition('before');
+        } else if (selectedWord.start > lastActiveWord.start) {
+            setRelativePosition('after');
+        }
+    }
+  };
 
 
   const handleWordChange = (newWord: string, index: number) => {
@@ -203,16 +236,18 @@ const Transcript: React.FC<TranscriptProps> = ({
         />
       ))}
       <Popover
-        isOpen={isTextSelected}
-        positions={['top', 'right', 'bottom', 'left']}
-        content={
-            <PopoverBox 
-                action={action} 
-                onActionButtonClick={handleActionButtonClick}
-            />
+          isOpen={isTextSelected}
+          positions={['top', 'right', 'bottom', 'left']}
+          content={
+              selectedWordIndices && selectedWordIndices.start === selectedWordIndices.end ? 
+              <WordPopover wordStatus={words[selectedWordIndices.start].isActive ? 'active' : 'inactive'} relativePosition={relativePosition} /> : 
+              <PopoverBox 
+                  action={action} 
+                  onActionButtonClick={handleActionButtonClick}
+              />
           }
       >
-        <span style={{ position: 'absolute', top: anchorPosition?.top, left: anchorPosition?.left }}></span>
+          <span style={{ position: 'absolute', top: anchorPosition?.top, left: anchorPosition?.left }}></span>
       </Popover>
     </div>
   );
