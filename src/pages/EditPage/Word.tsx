@@ -15,11 +15,12 @@ interface WordProps {
   word: WordType;
   onClick: () => void;
   isClicked: boolean;
+  isSelected?: boolean;
   onWordChange: (newWord: string) => void;
-  index: number;  // Added this line
+  index: number;
 }
 
-const Word: React.FC<WordProps> = ({ word, onClick, isClicked, onWordChange, index }) => {
+const Word: React.FC<WordProps> = ({ word, onClick, isClicked, onWordChange, index, isSelected = false }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedWord, setEditedWord] = useState(word.word);
@@ -63,7 +64,7 @@ const Word: React.FC<WordProps> = ({ word, onClick, isClicked, onWordChange, ind
   ) : (
     <span
       data-index={index}  // Added this line
-      className={`word ${isHovered ? 'highlight' : ''} ${isClicked ? 'clicked' : ''} ${!word.isActive ? 'inactive' : ''}`}
+      className={`word ${isHovered ? 'highlight' : ''} ${isClicked || isSelected ? 'clicked' : ''} ${!word.isActive ? 'inactive' : ''}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={onClick}

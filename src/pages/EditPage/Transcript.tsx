@@ -87,7 +87,7 @@ const Transcript: React.FC<TranscriptProps> = ({
   const [clickedWordIndex, setClickedWordIndex] = useState<number | null>(null);
   const [isTextSelected, setIsTextSelected] = useState(false);
   const [selectedWords, setSelectedWords] = useState<string[]>([]);
-  const [selectedWordIndices, setSelectedWordIndices] = useState<number[]>([]);
+  const [selectedWordIndices, setSelectedWordIndices] = useState<{ start: number, end: number } | null>(null);
   const [anchorPosition, setAnchorPosition] = useState<{ top: number, left: number } | null>(null);
   const [action, setAction] = useState<string>("Add");
 
@@ -141,17 +141,18 @@ const Transcript: React.FC<TranscriptProps> = ({
                 const startIndex = parseInt(startIndexStr, 10);
                 const endIndex = parseInt(endIndexStr, 10);
 
-                console.log("Selected indices:", startIndex, endIndex); // Logging selected indices
+                setSelectedWordIndices({ start: startIndex, end: endIndex });  // Update the selected indices state
 
                 const selectedWordsArray = words.slice(startIndex, endIndex + 1).map(w => w.word);
                 setSelectedWords(selectedWordsArray);
-                console.log("Selected words:", selectedWordsArray); // Logging selected words
+                
             }
         }
     } else {
         setIsTextSelected(false);
     }
-};
+    window.getSelection().removeAllRanges();
+  };
 
 
   useEffect(() => {
@@ -184,9 +185,9 @@ const Transcript: React.FC<TranscriptProps> = ({
           onClick={() => handleClick(i)} 
           isClicked={i === clickedWordIndex || i === currentWordIndex} 
           onWordChange={(newWord) => handleWordChange(newWord, i)}
-          index={i}  // Add this line
+          index={i}
+          isSelected={!!selectedWordIndices && i >= selectedWordIndices.start && i <= selectedWordIndices.end}
         />
-
       ))}
       <Popover
         isOpen={isTextSelected}
