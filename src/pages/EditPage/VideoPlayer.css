@@ -6,7 +6,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid red; /* for debugging */
+  border: 2px solid rgb(69, 69, 69); /* for debugging */
 }
 
 .video-player video {
