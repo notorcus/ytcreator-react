@@ -87,6 +87,7 @@ const Transcript: React.FC<TranscriptProps> = ({
   const [clickedWordIndex, setClickedWordIndex] = useState<number | null>(null);
   const [isTextSelected, setIsTextSelected] = useState(false);
   const [selectedWords, setSelectedWords] = useState<string[]>([]);
+  const [selectedWordIndices, setSelectedWordIndices] = useState<number[]>([]);
   const [anchorPosition, setAnchorPosition] = useState<{ top: number, left: number } | null>(null);
   const [action, setAction] = useState<string>("Add");
 
@@ -123,34 +124,44 @@ const Transcript: React.FC<TranscriptProps> = ({
   const handleMouseUp = () => {
     const selectedText = window.getSelection();
     if (selectedText && selectedText.toString().length > 0) {
-      const range = selectedText.getRangeAt(0);
-      const rect = range.getBoundingClientRect();
-      setAnchorPosition({ top: rect.top, left: rect.left });
+        const range = selectedText.getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+        setAnchorPosition({ top: rect.top, left: rect.left });
+        setIsTextSelected(true);
 
-      // Check if the selected text is active
-      const selectedTextStart = parseFloat((range.startContainer.parentNode as Element)?.getAttribute("data-start") || "0");
-      const selectedTextEnd = parseFloat((range.endContainer.parentNode as Element)?.getAttribute("data-end") || "0");
-      const isActive = words.some(word => word.isActive && word.start >= selectedTextStart && word.end <= selectedTextEnd);
-      setIsTextSelected(true);
-      setSelectedWords(isActive ? ["Remove"] : ["Add"]);
+        // Directly extract the index from the data attribute
+        const anchorElement = selectedText.anchorNode?.parentElement;
+        const focusElement = selectedText.focusNode?.parentElement;
+
+        if (anchorElement && focusElement) {
+            const startIndexStr = anchorElement.getAttribute('data-index');
+            const endIndexStr = focusElement.getAttribute('data-index');
+
+            if (startIndexStr && endIndexStr) {
+                const startIndex = parseInt(startIndexStr, 10);
+                const endIndex = parseInt(endIndexStr, 10);
+
+                console.log("Selected indices:", startIndex, endIndex); // Logging selected indices
+
+                const selectedWordsArray = words.slice(startIndex, endIndex + 1).map(w => w.word);
+                setSelectedWords(selectedWordsArray);
+                console.log("Selected words:", selectedWordsArray); // Logging selected words
+            }
+        }
     } else {
-      setIsTextSelected(false);
+        setIsTextSelected(false);
     }
-  };
-  
+};
+
 
   useEffect(() => {
-      console.log("Is text selected:", isTextSelected);
   }, [isTextSelected]);
 
 
   const handleClick = (index: number) => {
     setClickedWordIndex(index);
     onWordClick(words[index].start);
-
-    // Update the selected words
-    setSelectedWords([words[index].word]);
-  };
+};
 
 
   const handleWordChange = (newWord: string, index: number) => {
@@ -173,7 +184,9 @@ const Transcript: React.FC<TranscriptProps> = ({
           onClick={() => handleClick(i)} 
           isClicked={i === clickedWordIndex || i === currentWordIndex} 
           onWordChange={(newWord) => handleWordChange(newWord, i)}
+          index={i}  // Add this line
         />
+
       ))}
       <Popover
         isOpen={isTextSelected}

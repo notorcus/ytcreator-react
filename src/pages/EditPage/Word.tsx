@@ -16,9 +16,10 @@ interface WordProps {
   onClick: () => void;
   isClicked: boolean;
   onWordChange: (newWord: string) => void;
+  index: number;  // Added this line
 }
 
-const Word: React.FC<WordProps> = ({ word, onClick, isClicked, onWordChange }) => {
+const Word: React.FC<WordProps> = ({ word, onClick, isClicked, onWordChange, index }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedWord, setEditedWord] = useState(word.word);
@@ -61,6 +62,7 @@ const Word: React.FC<WordProps> = ({ word, onClick, isClicked, onWordChange }) =
     />
   ) : (
     <span
+      data-index={index}  // Added this line
       className={`word ${isHovered ? 'highlight' : ''} ${isClicked ? 'clicked' : ''} ${!word.isActive ? 'inactive' : ''}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
