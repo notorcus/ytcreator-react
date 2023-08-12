@@ -76,7 +76,7 @@ const computeSubtitles = (words: WordType[]): Subtitle[] => {
 };
 
 const Transcript: React.FC<TranscriptProps> = ({ 
-  //currentTime, 
+  currentTime, 
   onWordClick, 
   playing, 
   setSubtitles, 
@@ -92,6 +92,7 @@ const Transcript: React.FC<TranscriptProps> = ({
   const [anchorPosition, setAnchorPosition] = useState<{ top: number, left: number } | null>(null);
   const [action, setAction] = useState<string>("Add");
   const [relativePosition, setRelativePosition] = useState<'before' | 'after' | 'isolated'>();
+  const [highlightedWordIndex, setHighlightedWordIndex] = useState<number | null>(null);
 
   useEffect(() => {
     fetch('/MW Hormozi.json')
@@ -122,6 +123,18 @@ const Transcript: React.FC<TranscriptProps> = ({
     }
   }, [playing]);
 
+  useEffect(() => {
+    const highlightInterval = setInterval(() => {
+      const currentWordIndex = words.findIndex(
+        word => word.start <= currentTime && word.end >= currentTime
+      );
+      setHighlightedWordIndex(currentWordIndex);
+    }, 10); // Check every 100ms
+
+    return () => {
+      clearInterval(highlightInterval); // Clear the interval when the component is unmounted or when needed
+    };
+  }, [words, currentTime]);
 
   const handleMouseUp = () => {
     const selectedText = window.getSelection();
@@ -174,6 +187,9 @@ const Transcript: React.FC<TranscriptProps> = ({
 
   const handleClick = (index: number) => {
     setClickedWordIndex(index);
+
+    onWordClick(words[index].start);
+
     setSelectedWordIndices({ start: index, end: index });
 
     // Get the bounding box of the clicked word to set the anchor position
@@ -188,7 +204,9 @@ const Transcript: React.FC<TranscriptProps> = ({
     onWordClick(words[index].start);
   };
 
-
+  const currentWordIndex = words.findIndex(
+    word => word.start <= currentTime && word.end >= currentTime
+  );
 
   const determineRelativePosition = (index: number) => {
     const selectedWord = words[index];
@@ -232,6 +250,7 @@ const Transcript: React.FC<TranscriptProps> = ({
           onClick={() => handleClick(i)} 
           onWordChange={(newWord) => handleWordChange(newWord, i)}
           index={i}
+          isWordPlaying={i === highlightedWordIndex}
           selectedWordIndices={selectedWordIndices}
         />
       ))}
@@ -250,7 +269,7 @@ const Transcript: React.FC<TranscriptProps> = ({
           <span style={{ position: 'absolute', top: anchorPosition?.top, left: anchorPosition?.left }}></span>
       </Popover>
     </div>
-  );
+  );  
 };
 
 export default Transcript;

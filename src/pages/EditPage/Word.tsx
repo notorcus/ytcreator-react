@@ -15,10 +15,12 @@ interface WordProps {
   onClick: () => void;
   onWordChange: (newWord: string) => void;
   index: number;
+  isWordPlaying: boolean; 
   selectedWordIndices: { start: number, end: number } | null;
 }
 
-const Word: React.FC<WordProps> = ({ word, onClick, onWordChange, index, selectedWordIndices }) => {
+const Word: React.FC<WordProps> = ({ word, onClick, onWordChange, index, isWordPlaying, selectedWordIndices }) => {
+  console.log("Word:", word.word, "Is playing:", isWordPlaying);
   const [isHovered, setIsHovered] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedWord, setEditedWord] = useState(word.word);
@@ -64,7 +66,7 @@ const Word: React.FC<WordProps> = ({ word, onClick, onWordChange, index, selecte
     />
   ) : (
     <span
-        className={`word ${isHovered ? 'highlight' : ''} ${isSingleClicked ? 'clicked' : ''} ${!word.isActive ? 'inactive' : ''} ${isPartOfSelection ? 'multiple-select' : ''}`}
+        className={`word ${isHovered ? 'highlight' : ''} ${isSingleClicked ? 'clicked' : ''} ${!word.isActive ? 'inactive' : ''} ${isPartOfSelection ? 'multiple-select' : ''} ${isWordPlaying ? 'playing' : ''}`}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onClick={onClick}
@@ -76,4 +78,4 @@ const Word: React.FC<WordProps> = ({ word, onClick, onWordChange, index, selecte
   );
 };
 
-export default Word;
+export default React.memo(Word);

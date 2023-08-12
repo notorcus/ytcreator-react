@@ -1,6 +1,6 @@
 /* Word.css */
 .word {
-    transition: background-color 0.1s ease;
+    transition: none !important;
     cursor: pointer;
     display: inline-block;
     }
@@ -22,5 +22,10 @@
 
 .word.clicked {
     background-color: #10527e;
+    border-radius: 4px;
+}
+
+.word.playing {
+    background-color: #10527e; 
     border-radius: 4px;
 }
