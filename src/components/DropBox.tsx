@@ -5,7 +5,6 @@ import './DropBox.css';
 import { useNavigate } from 'react-router-dom';
 import { useVideoData } from '../pages/EditPage/VideoContext';
 
-
 const DropBox = () => {
   const [text, setText] = useState('');
   const navigate = useNavigate();
@@ -16,10 +15,16 @@ const DropBox = () => {
   };
 
   const sendLink = async (url: string) => {
+    // Define the body data
+    const bodyData = {
+      'video_url': url,
+      'mode': 'frontend_dev'  // Add this line to set the mode
+    };
+
     const requestOptions = {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ 'video_url': url })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(bodyData)
     };
 
     const response = await fetch('http://127.0.0.1:8000/ytcreator/api/process_video', requestOptions);
