@@ -18,12 +18,18 @@ const VideoContext = createContext<{
   videoData: VideoData;
   setVideoData: React.Dispatch<React.SetStateAction<VideoData>>;
   wordsArray: WordType[];
-  setStartTime?: (time: number) => void;
-  setEndTime?: (time: number) => void;
+  selectedVideoIndex: number | null;
+  setSelectedVideoIndex: React.Dispatch<React.SetStateAction<number | null>>;
+  setStartWord: (wordIndex: number) => void; // New function
+  setEndWord: (wordIndex: number) => void;   // New function
 }>({
   videoData: defaultVideoData,
   setVideoData: () => {},
   wordsArray: [],
+  selectedVideoIndex: null,
+  setSelectedVideoIndex: () => {},
+  setStartWord: () => {}, // Placeholder
+  setEndWord: () => {},   // Placeholder
 });
 
 // Function to set active words for a given video
@@ -39,6 +45,19 @@ function setActiveWordsForVideo(video: Video, words: WordType[]): WordType[] {
   return words;
 }
 
+function logVideoDetails(videos: Video[], words: WordType[]) {
+  videos.forEach((video, index) => {
+    const startWord = words[video.start_idx];
+    const endWord = words[video.end_idx];
+    const activeWordsList = words.slice(video.start_idx, video.end_idx + 1).map(word => word.word).join(', ');
+
+    console.log(`Video ${index + 1}:`);
+    console.log(`Start Index: ${video.start_idx}, Word: ${startWord?.word}`);
+    console.log(`End Index: ${video.end_idx}, Word: ${endWord?.word}`);
+    console.log(`Active Words: ${activeWordsList}`);
+  });
+}
+
 // Main function to process all videos
 function processVideos(videos: Video[], words: WordType[]): WordType[] {
   videos.forEach(video => {
@@ -51,6 +70,7 @@ function processVideos(videos: Video[], words: WordType[]): WordType[] {
 export const VideoProvider: React.FC<VideoProviderProps> = ({ children }) => {
   const [videoData, setVideoData] = useState(defaultVideoData);
   const [wordsArray, setWordsArray] = useState<WordType[]>([]);
+  const [selectedVideoIndex, setSelectedVideoIndex] = useState<number | null>(null);
 
   useEffect(() => {
     if (videoData.status === "success") {
@@ -60,24 +80,40 @@ export const VideoProvider: React.FC<VideoProviderProps> = ({ children }) => {
         end: wordDetail.end,
         isActive: false // Initialize with isActive set to false
       }));
-
+  
       // Process the videos to set active words
       const processedWords = processVideos(videoData.data.videos, extractedWords);
       setWordsArray(processedWords);
+      
+      // Log the video details
+      logVideoDetails(videoData.data.videos, processedWords);
     }
   }, [videoData]);
+  
 
   useEffect(() => {
     console.log("wordsArray:", wordsArray);
   }, [wordsArray]);
 
-  useEffect(() => {
-    const activeWords = wordsArray.filter(word => word.isActive);
-    console.log("Active Words:", activeWords);
-  }, [wordsArray]);
 
   return (
-    <VideoContext.Provider value={{ videoData, setVideoData, wordsArray}}>
+    <VideoContext.Provider 
+      value={{
+        videoData, 
+        setVideoData, 
+        wordsArray, 
+        selectedVideoIndex,
+        setSelectedVideoIndex,
+        setStartWord: (wordIndex: number) => {
+          console.log("Start word index set:", wordIndex);
+          // Placeholder implementation (you can add real logic later)
+        },
+        setEndWord: (wordIndex: number) => {
+          console.log("End word index set:", wordIndex);
+          // Placeholder implementation (you can add real logic later)
+        }
+      }}
+    >
       {children}
     </VideoContext.Provider>
   );
