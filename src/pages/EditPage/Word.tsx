@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import './Word.css';
 
-interface WordType {
+export type WordType = {
   word: string;
   start: number;
   end: number;
-  score: number;
-  speaker: string;
-  isActive: boolean;
-}
+  isActive?: boolean;
+};
 
 interface WordProps {
   word: WordType;
@@ -20,7 +18,6 @@ interface WordProps {
 }
 
 const Word: React.FC<WordProps> = ({ word, onClick, onWordChange, index, isWordPlaying, selectedWordIndices }) => {
-  console.log("Word:", word.word, "Is playing:", isWordPlaying);
   const [isHovered, setIsHovered] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedWord, setEditedWord] = useState(word.word);
