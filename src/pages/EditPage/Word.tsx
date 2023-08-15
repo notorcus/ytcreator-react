@@ -1,24 +1,23 @@
-// Word.tsx
 import React, { useState } from 'react';
 import './Word.css';
 
-interface WordType {
+export type WordType = {
   word: string;
   start: number;
   end: number;
-  score: number;
-  speaker: string;
-  isActive: boolean; // New property
-}
+  isActive?: boolean;
+};
 
 interface WordProps {
   word: WordType;
   onClick: () => void;
-  isClicked: boolean;
   onWordChange: (newWord: string) => void;
+  index: number;
+  isWordPlaying: boolean; 
+  selectedWordIndices: { start: number, end: number } | null;
 }
 
-const Word: React.FC<WordProps> = ({ word, onClick, isClicked, onWordChange }) => {
+const Word: React.FC<WordProps> = ({ word, onClick, onWordChange, index, isWordPlaying, selectedWordIndices }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedWord, setEditedWord] = useState(word.word);
@@ -50,6 +49,9 @@ const Word: React.FC<WordProps> = ({ word, onClick, isClicked, onWordChange }) =
     }
   };
 
+  const isSingleClicked = selectedWordIndices && index === selectedWordIndices.start && index === selectedWordIndices.end;
+  const isPartOfSelection = selectedWordIndices && index >= selectedWordIndices.start && index <= selectedWordIndices.end;
+
   return isEditing ? (
     <input 
       type="text" 
@@ -61,15 +63,16 @@ const Word: React.FC<WordProps> = ({ word, onClick, isClicked, onWordChange }) =
     />
   ) : (
     <span
-      className={`word ${isHovered ? 'highlight' : ''} ${isClicked ? 'clicked' : ''} ${!word.isActive ? 'inactive' : ''}`}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onClick={onClick}
-      onDoubleClick={handleDoubleClick}
+        className={`word ${isHovered ? 'highlight' : ''} ${isSingleClicked ? 'clicked' : ''} ${!word.isActive ? 'inactive' : ''} ${isPartOfSelection ? 'multiple-select' : ''} ${isWordPlaying ? 'playing' : ''}`}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onClick={onClick}
+        onDoubleClick={handleDoubleClick}
+        data-index={index}
     >
-      {word.word + ' '}
+        {word.word + ' '}
     </span>
   );
 };
 
-export default Word;
+export default React.memo(Word);
