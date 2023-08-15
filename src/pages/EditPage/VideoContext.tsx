@@ -43,12 +43,9 @@ function setActiveWordsForVideo(video: Video, words: WordType[]): WordType[] {
 
   // Set words to active in the range
   for (let i = startWordIndex; i <= endWordIndex; i++) {
-    console.log("Setting isActive for index:", i);
     if (words[i]) {
       words[i].isActive = true;
-    } else {
-      console.error("Word at index", i, "is undefined");
-    }    
+    }
   }
   
   return words;
@@ -94,31 +91,43 @@ export const VideoProvider: React.FC<VideoProviderProps> = ({ children }) => {
   
 
   useEffect(() => {
-    console.log("wordsArray:", wordsArray);
+    // console.log("wordsArray:", wordsArray);
   }, [wordsArray]);
 
+  const updateActiveWordsForCurrentVideo = (newStartIndex?: number, newEndIndex?: number) => {
+    if (selectedVideoIndex === null) return;
 
-  return (
+    // 1. Update the current video's start and/or end index directly
+    if (newStartIndex !== undefined) videoData.data.videos[selectedVideoIndex].start_idx = newStartIndex;
+    if (newEndIndex !== undefined) videoData.data.videos[selectedVideoIndex].end_idx = newEndIndex;
+
+    // 2. Reset active words
+    const resetWords = wordsArray.map(word => ({ ...word, isActive: false }));
+
+    // 3. Set new active words using the existing function
+    const updatedWords = setActiveWordsForSelectedVideo(selectedVideoIndex, resetWords, videoData);
+    setWordsArray(updatedWords);
+};
+
+return (
     <VideoContext.Provider 
-      value={{
-        videoData, 
-        setVideoData, 
-        wordsArray, 
-        setWordsArray,
-        selectedVideoIndex,
-        setSelectedVideoIndex,
-        setStartWord: (wordIndex: number) => {
-          console.log("Start word index set:", wordIndex);
-          // Placeholder implementation (you can add real logic later)
-        },
-        setEndWord: (wordIndex: number) => {
-          console.log("End word index set:", wordIndex);
-          // Placeholder implementation
-        },
-        setActiveWordsForSelectedVideo
-      }}
+        value={{
+            videoData, 
+            setVideoData, 
+            wordsArray, 
+            setWordsArray,
+            selectedVideoIndex,
+            setSelectedVideoIndex,
+            setStartWord: (wordIndex: number) => {
+                updateActiveWordsForCurrentVideo(wordIndex);
+            },
+            setEndWord: (wordIndex: number) => {
+                updateActiveWordsForCurrentVideo(undefined, wordIndex);
+            },
+            setActiveWordsForSelectedVideo
+        }}
     >
-      {children}
+        {children}
     </VideoContext.Provider>
   );  
 };
