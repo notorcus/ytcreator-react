@@ -5,15 +5,8 @@ import './Transcript.css';
 import { Popover } from 'react-tiny-popover';
 import PopoverBox from './PopoverBox';
 import WordPopover from './WordPopover';
-
-export interface WordType {
-  word: string;
-  start: number;
-  end: number;
-  score: number;
-  speaker: string;
-  isActive: boolean;
-}
+import { useVideoData } from './VideoContext';
+import { WordType } from './Types';  // Adjust the path as required
 
 interface Entry {
   start: number;
@@ -44,12 +37,14 @@ const computeSubtitles = (words: WordType[]): Subtitle[] => {
   const groups: WordType[][] = [];
   let group: WordType[] = [];
   words.forEach(word => {
-    group.push(word);
-    if (word.word.endsWith('.') || word.word.endsWith('?') || word.word.endsWith(',')) {
-      groups.push(group);
-      group = [];
+    if (word && word.word) {
+      group.push(word);
+      if (word.word.endsWith('.') || word.word.endsWith('?') || word.word.endsWith(',')) {
+        groups.push(group);
+        group = [];
+      }
     }
-  });
+  });  
   if (group.length > 0) {
     groups.push(group);
   }
@@ -81,8 +76,6 @@ const Transcript: React.FC<TranscriptProps> = ({
   playing, 
   setSubtitles, 
   onActiveWordsChange,
-  startTime,
-  endTime,
 }) => {
   const [words, setWords] = useState<WordType[]>([]);
   const [clickedWordIndex, setClickedWordIndex] = useState<number | null>(null);
@@ -93,28 +86,27 @@ const Transcript: React.FC<TranscriptProps> = ({
   const [action, setAction] = useState<string>("Add");
   const [relativePosition, setRelativePosition] = useState<'before' | 'after' | 'isolated'>();
   const [highlightedWordIndex, setHighlightedWordIndex] = useState<number | null>(null);
+  const { videoData, wordsArray, selectedVideoIndex } = useVideoData();  // Fetch selectedVideoIndex directly
 
   useEffect(() => {
-    fetch('/MW Hormozi.json')
-      .then((res) => res.json())
-      .then((data: Entry[]) => {
-        const activeWords = data.flatMap(entry => entry.words.map(word => ({
-          ...word,
-          isActive: word.start >= startTime && word.end <= endTime
-        })));
-        setWords(activeWords);
-        setSubtitles(computeSubtitles(activeWords));
+    setWords(wordsArray);  // Directly set the wordsArray
+    setSubtitles(computeSubtitles(wordsArray));
 
-        // Control video playback based on active words
-        const firstActiveWord = activeWords.find(word => word.isActive);
-        const lastActiveWord = [...activeWords].reverse().find(word => word.isActive);
-        
+    console.log("Selected Video Index:", selectedVideoIndex); // Log the selected video index
+
+    if (selectedVideoIndex !== null && selectedVideoIndex < videoData.data.videos.length) {
+        const currentVideo = videoData.data.videos[selectedVideoIndex];
+        const firstActiveWord = wordsArray[currentVideo.start_idx];
+        const lastActiveWord = wordsArray[currentVideo.end_idx];
+
+        console.log("First Active Word:", firstActiveWord); // Log the first active word
+        console.log("Last Active Word:", lastActiveWord);   // Log the last active word
+
         if (firstActiveWord && lastActiveWord) {
-          onActiveWordsChange(firstActiveWord.start, lastActiveWord.end);
+            onActiveWordsChange(firstActiveWord.start, lastActiveWord.end);
         }
-      })
-      .catch((err) => console.error("Error loading JSON file:", err));
-  }, [startTime, endTime]); 
+    }
+}, [videoData, wordsArray, currentTime, selectedVideoIndex]);
 
 
   useEffect(() => {
@@ -183,30 +175,25 @@ const Transcript: React.FC<TranscriptProps> = ({
     }
   };
 
-
-
   const handleClick = (index: number) => {
     setClickedWordIndex(index);
-
+  
+    // This will start the video from the clicked word's start time
     onWordClick(words[index].start);
-
+  
     setSelectedWordIndices({ start: index, end: index });
-
+  
     // Get the bounding box of the clicked word to set the anchor position
     const wordElement = document.querySelector(`[data-index="${index}"]`);
     if (wordElement) {
-        const rect = wordElement.getBoundingClientRect();
-        setAnchorPosition({ top: rect.top, left: rect.left });
+      const rect = wordElement.getBoundingClientRect();
+      setAnchorPosition({ top: rect.top, left: rect.left });
     }
-
+  
     setIsTextSelected(true); // Show the popover when a word is clicked
     determineRelativePosition(index);  // Determine the relative position
-    onWordClick(words[index].start);
   };
-
-  const currentWordIndex = words.findIndex(
-    word => word.start <= currentTime && word.end >= currentTime
-  );
+  
 
   const determineRelativePosition = (index: number) => {
     const selectedWord = words[index];
@@ -222,7 +209,6 @@ const Transcript: React.FC<TranscriptProps> = ({
         }
     }
   };
-
 
   const handleWordChange = (newWord: string, index: number) => {
     const newWords = [...words];
@@ -242,7 +228,7 @@ const Transcript: React.FC<TranscriptProps> = ({
     };
 
   return (
-    <div className="transcript" onMouseUp={handleMouseUp}>
+    <div className="transcript">
       {words.map((word, i) => (
         <Word 
           key={i} 
@@ -259,7 +245,11 @@ const Transcript: React.FC<TranscriptProps> = ({
           positions={['top', 'right', 'bottom', 'left']}
           content={
               selectedWordIndices && selectedWordIndices.start === selectedWordIndices.end ? 
-              <WordPopover wordStatus={words[selectedWordIndices.start].isActive ? 'active' : 'inactive'} relativePosition={relativePosition} /> : 
+              <WordPopover 
+                  wordStatus={words[selectedWordIndices.start].isActive ? 'active' : 'inactive'} 
+                  relativePosition={relativePosition} 
+                  wordIndex={selectedWordIndices.start}
+              /> : 
               <PopoverBox 
                   action={action} 
                   onActionButtonClick={handleActionButtonClick}
@@ -269,7 +259,8 @@ const Transcript: React.FC<TranscriptProps> = ({
           <span style={{ position: 'absolute', top: anchorPosition?.top, left: anchorPosition?.left }}></span>
       </Popover>
     </div>
-  );  
+  );
+    
 };
 
 export default Transcript;

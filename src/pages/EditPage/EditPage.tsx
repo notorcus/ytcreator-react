@@ -13,15 +13,25 @@ const timeStringToSeconds = (time: string): number => {
 
 const EditPage = () => {
   const { videoId } = useParams<{ videoId: string }>();
-  const videoIndex = parseInt(videoId || "1", 10) - 1;
+  const videoIndex = parseInt(videoId || "1", 10) - 1
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [subtitles, setSubtitles] = useState<Subtitle[]>([]);
   const [currentSubtitleIndex, setCurrentSubtitleIndex] = useState<number | null>(null);
 
+  const { videoData, wordsArray, setSelectedVideoIndex, setActiveWordsForSelectedVideo, setWordsArray } = useVideoData();
+
+  useEffect(() => {
+    // Reset all active words
+    const resetWords = wordsArray.map(word => ({ ...word, isActive: false }));
+    const updatedWords = setActiveWordsForSelectedVideo(videoIndex, resetWords, videoData);
+    setWordsArray(updatedWords);
+    setSelectedVideoIndex(videoIndex);
+  }, [videoIndex]);
+  
+  
   // Use the context to retrieve videoData
-  const { videoData } = useVideoData();
   const videos = videoData.data.videos || [];
 
   const videoStartTime = videos[videoIndex]?.start_time ? timeStringToSeconds(videos[videoIndex].start_time) : 0;

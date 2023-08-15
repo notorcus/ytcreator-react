@@ -18,18 +18,22 @@ const VideoContext = createContext<{
   videoData: VideoData;
   setVideoData: React.Dispatch<React.SetStateAction<VideoData>>;
   wordsArray: WordType[];
+  setWordsArray: React.Dispatch<React.SetStateAction<WordType[]>>;
   selectedVideoIndex: number | null;
   setSelectedVideoIndex: React.Dispatch<React.SetStateAction<number | null>>;
-  setStartWord: (wordIndex: number) => void; // New function
-  setEndWord: (wordIndex: number) => void;   // New function
+  setStartWord: (wordIndex: number) => void;
+  setEndWord: (wordIndex: number) => void;
+  setActiveWordsForSelectedVideo: (selectedIndex: number, words: WordType[], videoData: VideoData) => WordType[];
 }>({
   videoData: defaultVideoData,
   setVideoData: () => {},
   wordsArray: [],
+  setWordsArray: () => {}, // Add this placeholder function
   selectedVideoIndex: null,
   setSelectedVideoIndex: () => {},
-  setStartWord: () => {}, // Placeholder
-  setEndWord: () => {},   // Placeholder
+  setStartWord: () => {},
+  setEndWord: () => {},
+  setActiveWordsForSelectedVideo: () => []  // Add this placeholder function returning an empty array
 });
 
 // Function to set active words for a given video
@@ -39,9 +43,21 @@ function setActiveWordsForVideo(video: Video, words: WordType[]): WordType[] {
 
   // Set words to active in the range
   for (let i = startWordIndex; i <= endWordIndex; i++) {
-    words[i].isActive = true;
+    console.log("Setting isActive for index:", i);
+    if (words[i]) {
+      words[i].isActive = true;
+    } else {
+      console.error("Word at index", i, "is undefined");
+    }    
   }
   
+  return words;
+}
+
+function setActiveWordsForSelectedVideo(selectedIndex: number, words: WordType[], videoData: VideoData): WordType[] {
+  if (videoData.data.videos[selectedIndex]) {
+    return setActiveWordsForVideo(videoData.data.videos[selectedIndex], words);
+  }
   return words;
 }
 
@@ -58,15 +74,6 @@ function logVideoDetails(videos: Video[], words: WordType[]) {
   });
 }
 
-// Main function to process all videos
-function processVideos(videos: Video[], words: WordType[]): WordType[] {
-  videos.forEach(video => {
-    words = setActiveWordsForVideo(video, words);
-  });
-
-  return words;
-}
-
 export const VideoProvider: React.FC<VideoProviderProps> = ({ children }) => {
   const [videoData, setVideoData] = useState(defaultVideoData);
   const [wordsArray, setWordsArray] = useState<WordType[]>([]);
@@ -80,15 +87,10 @@ export const VideoProvider: React.FC<VideoProviderProps> = ({ children }) => {
         end: wordDetail.end,
         isActive: false // Initialize with isActive set to false
       }));
-  
-      // Process the videos to set active words
-      const processedWords = processVideos(videoData.data.videos, extractedWords);
-      setWordsArray(processedWords);
       
-      // Log the video details
-      logVideoDetails(videoData.data.videos, processedWords);
+      setWordsArray(extractedWords);
     }
-  }, [videoData]);
+  }, [videoData]);  
   
 
   useEffect(() => {
@@ -102,6 +104,7 @@ export const VideoProvider: React.FC<VideoProviderProps> = ({ children }) => {
         videoData, 
         setVideoData, 
         wordsArray, 
+        setWordsArray,
         selectedVideoIndex,
         setSelectedVideoIndex,
         setStartWord: (wordIndex: number) => {
@@ -110,13 +113,14 @@ export const VideoProvider: React.FC<VideoProviderProps> = ({ children }) => {
         },
         setEndWord: (wordIndex: number) => {
           console.log("End word index set:", wordIndex);
-          // Placeholder implementation (you can add real logic later)
-        }
+          // Placeholder implementation
+        },
+        setActiveWordsForSelectedVideo
       }}
     >
       {children}
     </VideoContext.Provider>
-  );
+  );  
 };
 
 export const useVideoData = () => {
