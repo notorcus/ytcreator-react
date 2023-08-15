@@ -88,12 +88,15 @@ const Transcript: React.FC<TranscriptProps> = ({
   const [highlightedWordIndex, setHighlightedWordIndex] = useState<number | null>(null);
   const { videoData, wordsArray, selectedVideoIndex } = useVideoData();  // Fetch selectedVideoIndex directly
 
+// Separate the logic for setting words and computing subtitles
   useEffect(() => {
-    setWords(wordsArray);  // Directly set the wordsArray
+    setWords(wordsArray);
     setSubtitles(computeSubtitles(wordsArray));
-
     console.log("Selected Video Index:", selectedVideoIndex); // Log the selected video index
+  }, [wordsArray]);
 
+// Separate the logic for logging and updating active words
+  useEffect(() => {
     if (selectedVideoIndex !== null && selectedVideoIndex < videoData.data.videos.length) {
         const currentVideo = videoData.data.videos[selectedVideoIndex];
         const firstActiveWord = wordsArray[currentVideo.start_idx];
@@ -106,7 +109,8 @@ const Transcript: React.FC<TranscriptProps> = ({
             onActiveWordsChange(firstActiveWord.start, lastActiveWord.end);
         }
     }
-}, [videoData, wordsArray, currentTime, selectedVideoIndex]);
+  }, [videoData, selectedVideoIndex]);
+
 
 
   useEffect(() => {
