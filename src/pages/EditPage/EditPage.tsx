@@ -34,8 +34,8 @@ const EditPage = () => {
   // Use the context to retrieve videoData
   const videos = videoData.data.videos || [];
 
-  const videoStartTime = videos[videoIndex]?.start_time ? timeStringToSeconds(videos[videoIndex].start_time) : 0;
-  const videoEndTime = videos[videoIndex]?.end_time ? timeStringToSeconds(videos[videoIndex].end_time) : 0;
+  const videoStartTime = wordsArray[videos[videoIndex]?.start_idx]?.start || 0;
+  const videoEndTime = wordsArray[videos[videoIndex]?.end_idx]?.end || 0;  
 
   useEffect(() => {
     const video = videoRef.current;
