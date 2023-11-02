@@ -18,6 +18,7 @@ export type Video = {
 };
 
 export type VideoData = {
+  video_path: any;
   status: string;
   message: string;
   data: {

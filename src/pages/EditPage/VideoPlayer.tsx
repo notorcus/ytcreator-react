@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import './VideoPlayer.css';
 import Captions from './Captions';
+import { useVideoData } from './VideoContext';
 
 interface Subtitle {
   start: number;
@@ -18,6 +19,7 @@ interface VideoPlayerProps {
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoRef, currentSubtitle, startTime, endTime }) => {
   const [isPlaying, setIsPlaying] = useState(false);
+  const { videoData } = useVideoData();
 
   useEffect(() => {
     const video = videoRef.current;
@@ -58,10 +60,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoRef, currentSubtitle, st
     };
   }, [videoRef, isPlaying, startTime, endTime]);
 
+  const videoPath = videoData.video_path ? '/' + videoData.video_path.split('/public/')[1] : '';
+
   return (
     <div className="video-player">
       <video ref={videoRef}>
-        <source src="/MW Hormozi.mp4" type="video/mp4" />
+        <source src={videoPath} type="video/mp4" /> {/* Use videoPath here */}
         Your browser does not support the video tag.
       </video>
       <Captions currentSubtitle={currentSubtitle !== null ? currentSubtitle.text : null} />

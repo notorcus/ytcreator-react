@@ -6,6 +6,7 @@ interface VideoProviderProps {
 }
 
 const defaultVideoData: VideoData = {
+  video_path: "default",
   status: "default",
   message: "default",
   data: {
